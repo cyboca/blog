@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>k8s on panda power!</title>
+    <link>http://localhost:1313/tags/k8s/</link>
+    <description>Recent content in k8s on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 11 Nov 2019 00:00:56 +0800</lastBuildDate>
+    
+	<atom:link href="http://localhost:1313/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kubernetes Redis Cluster</title>
+      <link>http://localhost:1313/post/emiya/kubernetes-redis-cluster/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:56 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/emiya/kubernetes-redis-cluster/</guid>
+      <description>kubernetes部署redis集群 [TOC]
+   镜像 版本 备注     redis.tar alpine    redis-trib.tar dockerfile构建 初始化redis集群    1、创建NFS存储 说明：创建NFS存储主要是为了给Redis提供稳定的后端存储，当Redis的Pod重启或迁移后，依然能获得原先的数据。这里，我们先要创建NFS，然后通过使用PV为Redis挂载一个远程的NFS路径
+/pv 192.168.10.0/24(rw,sync,all_squash) rw表示读写权限；all_squash 表示客户机上的任何用户访问该共享目录时都映射成服务器上的匿名用户（默认为nfsnobody）
+赋予权限:
+chmod -R 777 /pv 挂载到本地测试
+mount.nfs 192.168.10.200:/pv /pv  2、创建pv [root@node01 yml]# cat pv.yml apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv1 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.168.10.21 path: &amp;#34;/pv/pv1&amp;#34; --- apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv2 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Rbac</title>
+      <link>http://localhost:1313/post/emiya/kubernetes-rbac/</link>
+      <pubDate>Sun, 10 Nov 2019 22:53:48 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/emiya/kubernetes-rbac/</guid>
+      <description>Kubernetes使用RBAC授权 [TOC]
+示例环境：
+   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书
+openssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj &amp;#34;/CN=emiya&amp;#34; openssl x509 -req -in emiya.csr -CA etcd/ca.pem -CAkey etcd/ca-key.pem -CAcreateserial -out emiya.crt 2、set-cluster apiserver端口因集群而异，不一定是16443
+kubectl config set-cluster emiya --certificate-authority=/etc/kubernetes/cert/ca.pem --embed-certs=true --server=https://192.168.10.20:16443 --kubeconfig=/etc/kubernetes/config 部分选项说明：
+ &amp;ndash;client-key=&amp;ldquo;&amp;rdquo;: TLS使用的客户端密钥路径。 &amp;ndash;cluster=&amp;ldquo;&amp;rdquo;: 指定使用的kubeconfig配置文件中的集群名。 &amp;ndash;context=&amp;ldquo;&amp;rdquo;: 指定使用的kubeconfig配置文件中的环境名。 &amp;ndash;server=&amp;ldquo;&amp;rdquo;: Kubernetes API Server的地址和端口号 &amp;ndash;certificate-authority=&amp;ldquo;&amp;rdquo;: 用以进行认证授权的.</description>
+    </item>
+    
+    <item>
+      <title>Ingress Tls</title>
+      <link>http://localhost:1313/post/emiya/ingress-tls/</link>
+      <pubDate>Sun, 10 Nov 2019 16:46:17 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/emiya/ingress-tls/</guid>
+      <description>Ingress的tls功能测试 1、修改ingress-controller参数 查看是否有
+--enable-ssl-passthrough  2、部署deployment、service [root@node01 emiya]# cat deploy.yml apiVersion: apps/v1 kind: Deployment metadata: name: mysql namespace: emiya spec: replicas: 1 selector: matchLabels: app: mysql template: metadata: labels: app: mysql spec: containers: - name: mysql image: 192.168.10.30:5000/emiya/mysql:5.7.21 resources: limits: cpu: 0.3 memory: 400Mi ports: - containerPort: 3306 env: - name: MYSQL_ROOT_PASSWORD value: &amp;#34;123456&amp;#34; --- apiVersion: v1 kind: Service metadata: name: mysql namespace: emiya spec: ports: - port: 3306 selector: app: mysql --- apiVersion: apps/v1 kind: Deployment metadata: name: myweb namespace: emiya spec: selector: matchLabels: app: myweb replicas: 1 template: metadata: labels: app: myweb spec: containers: - name: tomcat-app image: 192.</description>
+    </item>
+    
+  </channel>
+</rss>

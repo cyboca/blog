@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Ingress Tls - panda power!</title>
+  <meta name="description" content="Ingress的tls功能测试 1、修改ingress-controller参数 查看是否有
+--enable-ssl-passthrough  2、部署deployment、service [root@node01 emiya]# cat deploy.yml apiVersion: apps/v1 kind: Deployment metadata: name: mysql namespace: emiya spec: replicas: 1 selector: matchLabels: app: mysql template: metadata: labels: app: mysql spec: containers: - name: mysql image: 192.168.10.30:5000/emiya/mysql:5.7.21 resources: limits: cpu: 0.3 memory: 400Mi ports: - containerPort: 3306 env: - name: MYSQL_ROOT_PASSWORD value: &#34;123456&#34; --- apiVersion: v1 kind: Service metadata: name: mysql namespace: emiya spec: ports: - port: 3306 selector: app: mysql --- apiVersion: apps/v1 kind: Deployment metadata: name: myweb namespace: emiya spec: selector: matchLabels: app: myweb replicas: 1 template: metadata: labels: app: myweb spec: containers: - name: tomcat-app image: 192.">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/emiya\/ingress-tls\/",
+          "name": "Ingress tls"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "emiya"
+  },
+  "headline": "Ingress Tls",
+  "description" : "Ingress的tls功能测试 1、修改ingress-controller参数 查看是否有\n--enable-ssl-passthrough  2、部署deployment、service [root@node01 emiya]# cat deploy.yml apiVersion: apps\/v1 kind: Deployment metadata: name: mysql namespace: emiya spec: replicas: 1 selector: matchLabels: app: mysql template: metadata: labels: app: mysql spec: containers: - name: mysql image: 192.168.10.30:5000\/emiya\/mysql:5.7.21 resources: limits: cpu: 0.3 memory: 400Mi ports: - containerPort: 3306 env: - name: MYSQL_ROOT_PASSWORD value: \x26#34;123456\x26#34; --- apiVersion: v1 kind: Service metadata: name: mysql namespace: emiya spec: ports: - port: 3306 selector: app: mysql --- apiVersion: apps\/v1 kind: Deployment metadata: name: myweb namespace: emiya spec: selector: matchLabels: app: myweb replicas: 1 template: metadata: labels: app: myweb spec: containers: - name: tomcat-app image: 192.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  207 ,
+  "datePublished" : "2019-11-10T16:46:17",
+  "dateModified" : "2019-11-10T16:46:17",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "Kubernetes, Nginx Ingress, Tls" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/emiya\/ingress-tls\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Ingress Tls" />
+<meta property="og:description" content="Ingress的tls功能测试 1、修改ingress-controller参数 查看是否有
+--enable-ssl-passthrough  2、部署deployment、service [root@node01 emiya]# cat deploy.yml apiVersion: apps/v1 kind: Deployment metadata: name: mysql namespace: emiya spec: replicas: 1 selector: matchLabels: app: mysql template: metadata: labels: app: mysql spec: containers: - name: mysql image: 192.168.10.30:5000/emiya/mysql:5.7.21 resources: limits: cpu: 0.3 memory: 400Mi ports: - containerPort: 3306 env: - name: MYSQL_ROOT_PASSWORD value: &#34;123456&#34; --- apiVersion: v1 kind: Service metadata: name: mysql namespace: emiya spec: ports: - port: 3306 selector: app: mysql --- apiVersion: apps/v1 kind: Deployment metadata: name: myweb namespace: emiya spec: selector: matchLabels: app: myweb replicas: 1 template: metadata: labels: app: myweb spec: containers: - name: tomcat-app image: 192.">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/emiya/ingress-tls/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="Ingress Tls" />
+  <meta name="twitter:description" content="Ingress的tls功能测试 1、修改ingress-controller参数 查看是否有
+--enable-ssl-passthrough  2、部署deployment、service [root@node01 emiya]# cat deploy.yml apiVersion: apps/v1 kind: Deployment metadata: name: mysql …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Ingress Tls</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 10, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;1&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;207&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;emiya
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h1 id="ingress的tls功能测试">Ingress的tls功能测试</h1>
+
+<h2 id="1-修改ingress-controller参数">1、修改ingress-controller参数</h2>
+
+<p>查看是否有</p>
+<div class="highlight"><pre class="chroma">--enable-ssl-passthrough  </pre></div>
+<h2 id="2-部署deployment-service">2、部署deployment、service</h2>
+<div class="highlight"><pre class="chroma">[root@node01 emiya]# cat deploy.yml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: emiya
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: 192.168.10.30:5000/emiya/mysql:5.7.21
+        resources:
+          limits:
+            cpu: 0.3
+            memory: 400Mi
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: &#34;123456&#34;
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: emiya
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myweb
+  namespace: emiya
+spec:
+  selector:
+    matchLabels:
+      app: myweb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: myweb
+    spec:
+      containers:
+      - name: tomcat-app
+        image: 192.168.10.30:5000/emiya/tomcat-app:v2
+        resources:
+          limits:
+            cpu: 0.3
+            memory: 400Mi
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_SERVICE_HOST
+          value: &#39;mysql&#39;
+        - name: MYSQL_SERVICE_PORT
+          value: &#39;3306&#39;
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myweb
+  namespace: emiya
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30001
+  selector:
+    app: myweb  </pre></div>
+<h2 id="3-创建key和证书">3、创建key和证书</h2>
+<div class="highlight"><pre class="chroma">openssl genrsa -out tls.key 2048
+openssl req -new -x509 -key tls.key -out tls.crt -subj /C=CN/ST=xj/L=xj/O=test/CN=emiya.com</pre></div>
+<h2 id="4-创建secret-tls">4、创建secret tls</h2>
+<div class="highlight"><pre class="chroma">kubectl -n emiya create secret tls tls-myweb --cert=tls.crt --key=tls.key  </pre></div>
+<h2 id="5-创建带证书的ingress">5、创建带证书的ingress</h2>
+<div class="highlight"><pre class="chroma">[root@node01 tls]# cat myweb.yaml 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rewrite-myweb
+  namespace: emiya
+  annotations:
+spec:
+  tls:
+  - hosts:
+    - myweb.emiya.com
+    secretName: tls-myweb
+  rules:
+  - host: myweb.emiya.com
+    http:
+      paths:
+      - path: /demo
+        backend:
+          serviceName: myweb
+          servicePort: 8080  </pre></div>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/kubernetes/">Kubernetes</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/nginx-ingress/">Nginx Ingress</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/tls/">Tls</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fingress-tls%2f&amp;text=Ingress%20Tls&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fingress-tls%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fingress-tls%2f&amp;title=Ingress%20Tls" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fingress-tls%2f&amp;title=Ingress%20Tls" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fingress-tls%2f&amp;title=Ingress%20Tls" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fingress-tls%2f&amp;description=Ingress%20Tls" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/emiya/networkpolicy/">NetworkPolicy</a></li>
+                
+                    <li><a href="/post/emiya/headless-service/">Headless service</a></li>
+                
+                    <li><a href="/post/emiya/traefik/">Traefik</a></li>
+                
+                    <li><a href="/post/emiya/annotations-nginx-ingress/">Annotations Nginx Ingress</a></li>
+                
+                    <li><a href="/post/emiya/nginx-ingress-0.21.0/">安装Nginx Ingress 0.21.0</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/emiya/kubernetes-rbac/" data-toggle="tooltip" data-placement="top" title="Kubernetes Rbac">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>windows on panda power!</title>
+    <link>https://cyboca.ga/tags/windows/</link>
+    <description>Recent content in windows on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 12 Nov 2019 01:38:19 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GithubDNS</title>
+      <link>https://cyboca.ga/post/rfl/githubdns/</link>
+      <pubDate>Tue, 12 Nov 2019 01:38:19 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/rfl/githubdns/</guid>
+      <description> GitHub解除访问和下载加速  &amp;emsp;国内疆内无法访问github或者是下载速度慢，大多数都是dns解析的ip被修改了，
+或者解析到ip访问延迟高，白话说就是墙了；本次教程原理就是不走dns解析，直
+接修改hosts文件走ip。
+ 确定IP地址  ip地址可能会发生改变
+ GitHub主要有以下5个域名地址：  github.global.ssl.fastly.net
+ github.com (github访问)
+ raw.githubusercontent.com (下载文件地址)
+ assets-cdn.github.com (github cdn)
+ codeload.github.com (旧github 地址)   可以通过以下两个网站获取  https://www.ipaddress.com/
+ http://tool.chinaz.com/dns
+   最好IP地址都ping一下测试
+hosts文件： windows: C:\Windows\System32\drivers\etc\hosts
+linux: /etc/hosts 199.232.5.194 github.global.ssl.fastly.net
+192.30.253.112 github.com 151.101.76.133 assets-cdn.github.com
+140.82.114.10 codeload.github.com
+199.232.4.133 raw.githubusercontent.com 
+ 测试访问： </description>
+    </item>
+    
+    <item>
+      <title>MarkdownPad02</title>
+      <link>https://cyboca.ga/post/rfl/markdownpad02/</link>
+      <pubDate>Mon, 11 Nov 2019 00:42:45 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/rfl/markdownpad02/</guid>
+      <description>markdownPad2安装和破解 MarkdownPad安装包下载: https://gitee.com/rslk/markdown2Install.git 下载解压之后，找要MarkdownPad2.exe打开 点击Enter Key 进入输入邮箱和License key:  Email address : Soar360@live.com
+License key : GBPduHjWfJU1mZqcPM3BikjYKF6xKhlKIys3i1MU2eJHqWGImDHzWdD6xhMNLGVpbP2M5SN6bnxn2kSE8qHqNY5QaaRxmO3YSMHxlv2EYpjdwLcPwfeTG7kUdnhKE0vVy4RidP6Y2wZ0q74f47fzsZo45JE2hfQBFi2O9Jldjp1mW8HUpTtLA2a5/sQytXJUQl/QKO0jUQY4pa5CCx20sV1ClOTZtAGngSOJtIOFXK599sBr5aIEFyH0K7H4BoNMiiDMnxt1rD8Vb/ikJdhGMMQr0R4B+L3nWU97eaVPTRKfWGDE8/eAgKzpGwrQQoDh+nzX1xoVQ8NAuH+s4UcSeQ==
+ 设置中文 waring: 出现HTML渲染组件出错
+解决方法： 下载Awesomium 1.6.6 SDK
+https://gitee.com/rslk/markdown2Install.git
+一共两个压缩文件，放在一起解压001即可
+双击安装（都默认）即可，然后重启markdownPad2</description>
+    </item>
+    
+  </channel>
+</rss>

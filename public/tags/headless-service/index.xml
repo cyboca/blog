@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Headless service on panda power!</title>
+    <link>https://cyboca.ga/tags/headless-service/</link>
+    <description>Recent content in Headless service on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 24 Nov 2019 23:40:33 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/headless-service/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Headless service</title>
+      <link>https://cyboca.ga/post/emiya/headless-service/</link>
+      <pubDate>Sun, 24 Nov 2019 23:40:33 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/headless-service/</guid>
+      <description>kubernetes之Headless 1、简介 service的cluster ip工作原理：kube-proxy 会监视 kubernetes 控制节点对 service 对象和 endpoints 对象的添加和移除。对每个 service，它会添加iptables 规则，从而捕获到达该 Service 的 clusterIP 和端口的请求，进而将请求重定向到 service 任意一组 backend pod 中; 对于每个 endpoints 对象，它也会添加iptables规则，这个规则会选择一个 backend pod 组合
+headless service也是一种service，不同的是不会为headless service分配cluster ip，没有cluster ip，kube-proxy 并不处理此类服务，而且kubernetes也不会为它们进行负载均衡和路由
+2、service和headless service对比 2.1为应用添加service并测试解析结果 [root@node01 headless]# cat svc-nginx.yaml apiVersion: v1 kind: Service metadata: name: nginx namespace: emiya spec: type: NodePort ports: - name: nginx protocol: TCP port: 80 nodePort: 30010 selector: app: nginx 部署并测试service name解析
+如图所示，从上面的结果中我们可以看到虽然service有2个endpoint，但是dns查询时只会返回service的cluster-ip的地址。具体client访问的是哪个real server，是由iptables来决定的</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Redis Cluster</title>
+      <link>https://cyboca.ga/post/emiya/kubernetes-redis-cluster/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:56 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/kubernetes-redis-cluster/</guid>
+      <description>kubernetes部署redis集群 [TOC]
+   镜像 版本 备注     redis.tar alpine    redis-trib.tar dockerfile构建 初始化redis集群    1、创建NFS存储 说明：创建NFS存储主要是为了给Redis提供稳定的后端存储，当Redis的Pod重启或迁移后，依然能获得原先的数据。这里，我们先要创建NFS，然后通过使用PV为Redis挂载一个远程的NFS路径
+/pv 192.168.10.0/24(rw,sync,all_squash) rw表示读写权限；all_squash 表示客户机上的任何用户访问该共享目录时都映射成服务器上的匿名用户（默认为nfsnobody）
+赋予权限:
+chmod -R 777 /pv 挂载到本地测试
+mount.nfs 192.168.10.200:/pv /pv  2、创建pv [root@node01 yml]# cat pv.yml apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv1 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.168.10.21 path: &amp;#34;/pv/pv1&amp;#34; --- apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv2 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.</description>
+    </item>
+    
+  </channel>
+</rss>

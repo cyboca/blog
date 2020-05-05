@@ -1,0 +1,52 @@
+/*gotoTop button*/
+#gotoTop {
+    position:fixed;
+    right:0;
+    opacity:.8;
+    visibility:hidden;
+    bottom:25px;
+    margin:0 25px 0 0;
+    z-index:99;
+    transition:.35s;
+    transform:scale(0);
+    transition:all .5s
+}
+#gotoTop.visible {
+    opacity:.8;
+    visibility:visible;
+    transform:scale(1)
+}
+#gotoTop.visible a:hover {
+    outline:none;
+    opacity:.9;
+    background:var(--accent)
+}
+#gotoTop a {
+    outline:none;
+    text-decoration:none;
+    border:0;
+    display:block;
+    width:46px;
+    height:46px;
+    background-color:#212121;
+    opacity:.8;
+    transition:all .3s;
+    border-radius:50%;
+    text-align:center;
+    font-size:26px
+}
+body #gotoTop a {
+    outline:none;
+    color:#fff
+}
+#gotoTop a:after {
+    outline:none;
+    content:"\f106";
+    font-family:fontawesome;
+    position:relative;
+    display:block;
+    top:50%;
+    -webkit-transform:translateY(-55%);
+    transform:translateY(-55%);
+    color:#ffffff
+}

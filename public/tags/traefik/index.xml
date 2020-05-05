@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Traefik on panda power!</title>
+    <link>https://cyboca.ga/tags/traefik/</link>
+    <description>Recent content in Traefik on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 24 Nov 2019 23:40:33 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/traefik/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Traefik</title>
+      <link>https://cyboca.ga/post/emiya/traefik/</link>
+      <pubDate>Sun, 24 Nov 2019 23:40:33 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/traefik/</guid>
+      <description>Traefik部署 需求
+   镜像名 版本     traefik v1.65    1、创建rbac授权 [root@node01 traefik]# cat rbac.yaml apiVersion: v1 kind: ServiceAccount metadata: name: traefik-ingress-controller namespace: kube-system --- kind: ClusterRole apiVersion: rbac.authorization.k8s.io/v1beta1 metadata: name: traefik-ingress-controller rules: - apiGroups: - &amp;#34;&amp;#34; resources: - services - endpoints - secrets verbs: - get - list - watch - apiGroups: - extensions resources: - ingresses verbs: - get - list - watch --- kind: ClusterRoleBinding apiVersion: rbac.</description>
+    </item>
+    
+  </channel>
+</rss>

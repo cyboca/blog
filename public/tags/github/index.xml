@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>github on panda power!</title>
+    <link>https://cyboca.ga/tags/github/</link>
+    <description>Recent content in github on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 12 Nov 2019 01:38:19 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/github/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GithubDNS</title>
+      <link>https://cyboca.ga/post/rfl/githubdns/</link>
+      <pubDate>Tue, 12 Nov 2019 01:38:19 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/rfl/githubdns/</guid>
+      <description> GitHub解除访问和下载加速  &amp;emsp;国内疆内无法访问github或者是下载速度慢，大多数都是dns解析的ip被修改了，
+或者解析到ip访问延迟高，白话说就是墙了；本次教程原理就是不走dns解析，直
+接修改hosts文件走ip。
+ 确定IP地址  ip地址可能会发生改变
+ GitHub主要有以下5个域名地址：  github.global.ssl.fastly.net
+ github.com (github访问)
+ raw.githubusercontent.com (下载文件地址)
+ assets-cdn.github.com (github cdn)
+ codeload.github.com (旧github 地址)   可以通过以下两个网站获取  https://www.ipaddress.com/
+ http://tool.chinaz.com/dns
+   最好IP地址都ping一下测试
+hosts文件： windows: C:\Windows\System32\drivers\etc\hosts
+linux: /etc/hosts 199.232.5.194 github.global.ssl.fastly.net
+192.30.253.112 github.com 151.101.76.133 assets-cdn.github.com
+140.82.114.10 codeload.github.com
+199.232.4.133 raw.githubusercontent.com 
+ 测试访问： </description>
+    </item>
+    
+  </channel>
+</rss>

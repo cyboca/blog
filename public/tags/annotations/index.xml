@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Annotations on panda power!</title>
+    <link>https://cyboca.ga/tags/annotations/</link>
+    <description>Recent content in Annotations on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 19:09:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/annotations/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Annotations Nginx Ingress</title>
+      <link>https://cyboca.ga/post/emiya/annotations-nginx-ingress/</link>
+      <pubDate>Sun, 17 Nov 2019 19:09:20 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/annotations-nginx-ingress/</guid>
+      <description>nginx ingress功能测试说明 [TOC]
+1、ingress.class  格式：kubernetes.io/ingress.class: &amp;ldquo;nginx&amp;rdquo; 说明：设置ingress 类型  2、use-regex  格式：nginx.ingress.kubernetes.io/use-regex: &amp;ldquo;true&amp;rdquo;
+ 说明：开启use-regex，启用path的正则匹配
+  3、app-root  格式：nginx.ingress.kubernetes.io/app-root string
+ 功能：重定向到指定目录
+  4、rewrite-target  格式：nginx.ingress.kubernetes.io/rewrite-target: path/url
+ 说明:重写规则、支持正则表达式
+ 示例：
+  nginx.ingress.kubernetes.io/rewrite-target: https://www.baidu.com
+nginx.ingress.kubernetes.io/rewrite-target: /
+5、configuration-snippet  格式：nginx.ingress.kubernetes.io/configuration-snippet: |
+ 说明：支持nginx规则
+ 示例：
+  nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/(.) http://www.baidu.com/ nginx.ingress.kubernetes.io/configuration-snippet: | rewrite /ana /animal/; nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/animal(/|$)?(.) /$2/ break;
+6、server-alias  格式：nginx.ingress.kubernetes.io/server-alias: &amp;ldquo;,&amp;ldquo;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on panda power!</title>
+    <link>https://cyboca.ga/tags/docker/</link>
+    <description>Recent content in Docker on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 08 Dec 2019 23:02:23 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker_Daemon配置官方文档翻译3</title>
+      <link>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913/</link>
+      <pubDate>Sun, 08 Dec 2019 23:02:23 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913/</guid>
+      <description>原文地址
+Enable debugging  启动调试
+ There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.
+ 这里两种方式开启调试，有两种启用调试的方法。推荐的方法是将debug关键词设置为true在daemon.json文件中的。该方法适用于每个Docker平台。
+ 1.Edit the daemon.json file, which is usually located in /etc/docker/. You may need to create this file, if it does not yet exist. On macOS or Windows, do not edit the file directly.</description>
+    </item>
+    
+    <item>
+      <title>Docker_Daemon配置官方文档翻译(2)</title>
+      <link>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/</link>
+      <pubDate>Sun, 01 Dec 2019 20:25:15 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/</guid>
+      <description>原文地址
+Troubleshoot the daemon  找到并解决问题在守护进程上
+ You can enable debugging on the daemon to learn about the runtime activity of the daemon and to aid in troubleshooting. If the daemon is completely non-responsive, you can also force a full stack trace of all threads to be added to the daemon log by sending the SIGUSR signal to the Docker daemon.
+ 你可以开启守护进程上的排错模式，它可以让你了解到运行时的活动记录，帮助你来排错。如果守护进程完全没有响应，你也可以通过发送SIGUSR信号，强制将所有线程的完整堆栈跟踪信息添加到守护进程日志
+ (SIGUSR信号不理解)
+Troubleshoot conflicts between the daemon.</description>
+    </item>
+    
+    <item>
+      <title>Docker Daemon配置官方文档翻译(1)</title>
+      <link>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/</link>
+      <pubDate>Sun, 24 Nov 2019 14:24:00 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/</guid>
+      <description>原文地址
+Configure and troubleshoot the Docker daemon  配置和找出错误在Docker daemon上
+ (Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)
+After successfully installing and starting Docker, the dockerd daemon runs with its default configuration. This topic shows how to customize the configuration, start the daemon manually, and troubleshoot and debug the daemon if you run into issues.
+ 在成功的安装和启动docker后，docker的守护进程会以它默认的配置文件运行，这个话题会展示如何配置配置文件，手动启动守护进程，和你在遇到错误时找到并解决错误。
+ Start the daemon using operating system utilities  启动守护进程通过操作系统程序
+ On a typical installation the Docker daemon is started by a system utility, not manually by a user.</description>
+    </item>
+    
+    <item>
+      <title>DeviceMapper</title>
+      <link>https://cyboca.ga/post/cxn/devicemapper/</link>
+      <pubDate>Sun, 17 Nov 2019 21:08:40 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/devicemapper/</guid>
+      <description>Docker的DeviceMapper 我们可以看一下docker的loopback设备：
+[root@node001 ~]# losetup -a /dev/loop0: [64768]:38050288 (/var/lib/docker/devicemapper/devicemapper/data) /dev/loop1: [64768]:38050289 (/var/lib/docker/devicemapper/devicemapper/metadata) 其中data 100GB，metadata 2.0GB
+[root@node001 ~]# ls -alhs /var/lib/docker/devicemapper/devicemapper 506M -rw-------. 1 root root 100G Sep 10 20:15 data 1.1M -rw-------. 1 root root 2.0G Sep 10 20:15 metadata 下面是相关的thin-pool。其中，有个当一大串hash串的device是正在启动的容器：
+[root@node001 ~]# ll /dev/mapper/dock* lrwxrwxrwx. 1 root root 7 Aug 25 07:57 /dev/mapper/docker-253:0-104108535-pool -&amp;gt; ../dm-2 lrwxrwxrwx. 1 root root 7 Aug 25 11:13 /dev/mapper/docker-253:0-104108535-deefcd630a60aa5ad3e69249f58a68e717324be4258296653406ff062f605edf -&amp;gt; ../dm-3 我们可以看一下它的device id（Docker都把它们记下来了）：</description>
+    </item>
+    
+    <item>
+      <title>Thin Provisioning</title>
+      <link>https://cyboca.ga/post/cxn/thinprovisioningsnapshot/</link>
+      <pubDate>Sun, 17 Nov 2019 20:33:48 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/thinprovisioningsnapshot/</guid>
+      <description>Thin Provisioning Snapshot 演示 下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。
+首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：
+[root@node001 ~]# dd if=/dev/zero of=/tmp/data.img bs=1K count=1 seek=10M 1+0 records in 1+0 records out 1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB/s [root@node001 ~]# dd if=/dev/zero of=/tmp/meta.data.img bs=1K count=1 seek=1G 1+0 records in 1+0 records out 1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB/s 注意命令中seek选项，其表示为略过of选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。
+[root@node001 ~]# ls -lsh /tmp/data.img 12K -rw-r--r--. 1 root root 11G Aug 25 23:01 /tmp/data.</description>
+    </item>
+    
+    <item>
+      <title>Cgroup</title>
+      <link>https://cyboca.ga/post/cxn/cgroup/</link>
+      <pubDate>Tue, 12 Nov 2019 22:50:28 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/cgroup/</guid>
+      <description>CGROUP Linux CGroup全称Linux Control Group， 是Linux内核的一个功能，用来限制，控制与分离一个进程组群的资源（如CPU、内存、磁盘输入输出等）。这个项目最早是由Google的工程师在2006年发起（主要是Paul Menage和Rohit Seth），最早的名称为进程容器（process containers）。在2007年时，因为在Linux内核中，容器（container）这个名词太过广泛，为避免混乱，被重命名为cgroup，并且被合并到2.6.24版的内核中去。然后，其它开始了他的发展。
+Linux CGroupCgroup 可​​​让​​​您​​​为​​​系​​​统​​​中​​​所​​​运​​​行​​​任​​​务​​​（进​​​程​​​）的​​​用​​​户​​​定​​​义​​​组​​​群​​​分​​​配​​​资​​​源​​​ — 比​​​如​​​ CPU 时​​​间​​​、​​​系​​​统​​​内​​​存​​​、​​​网​​​络​​​带​​​宽​​​或​​​者​​​这​​​些​​​资​​​源​​​的​​​组​​​合​​​。​​​您​​​可​​​以​​​监​​​控​​​您​​​配​​​置​​​的​​​ cgroup，拒​​​绝​​​ cgroup 访​​​问​​​某​​​些​​​资​​​源​​​，甚​​​至​​​在​​​ 运​​​行​​​的​​​系​​​统​​​中​​​动​​​态​​​配​​​置​​​您​​​的​​​ cgroup。
+主要提供了如下功能：
+ Resource limitation: 限制资源使用，比如内存使用上限以及文件系统的缓存限制。 Prioritization: 优先级控制，比如：CPU利用和磁盘IO吞吐。 Accounting: 一些审计或一些统计，主要目的是为了计费。 Control: 挂起进程，恢复执行进程。  使​​​用​​​ cgroup，系​​​统​​​管​​​理​​​员​​​可​​​更​​​具​​​体​​​地​​​控​​​制​​​对​​​系​​​统​​​资​​​源​​​的​​​分​​​配​​​、​​​优​​​先​​​顺​​​序​​​、​​​拒​​​绝​​​、​​​管​​​理​​​和​​​监​​​控​​​。​​​可​​​更​​​好​​​地​​​根​​​据​​​任​​​务​​​和​​​用​​​户​​​分​​​配​​​硬​​​件​​​资​​​源​​​，提​​​高​​​总​​​体​​​效​​​率​​​。
+在实践中，系统管理员一般会利用CGroup做下面这些事（有点像为某个虚拟机分配资源似的）：
+ 隔离一个进程集合（比如：nginx的所有进程），并限制他们所消费的资源，比如绑定CPU的核。 为这组进程 分配其足够使用的内存 为这组进程分配相应的网络带宽和磁盘存储限制 限制访问某些设备（通过设置设备的白名单）  首先，Linux把CGroup这个事实现成了一个file system，你可以mount。在我的Ubuntu 14.04下，你输入以下命令你就可以看到cgroup已为你mount好了。
+chenxn@ubuntu:~$ mount -t cgroup cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,relatime,cpuset) cgroup on /sys/fs/cgroup/cpu type cgroup (rw,relatime,cpu) cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,relatime,cpuacct) cgroup on /sys/fs/cgroup/memory type cgroup (rw,relatime,memory) cgroup on /sys/fs/cgroup/devices type cgroup (rw,relatime,devices) cgroup on /sys/fs/cgroup/freezer type cgroup (rw,relatime,freezer) cgroup on /sys/fs/cgroup/blkio type cgroup (rw,relatime,blkio) cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,net_prio) cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,net_cls) cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,relatime,perf_event) cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,relatime,hugetlb) 或者使用lssubsys命令：</description>
+    </item>
+    
+    <item>
+      <title>Namespace</title>
+      <link>https://cyboca.ga/post/cxn/namespace/</link>
+      <pubDate>Tue, 12 Nov 2019 22:50:19 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/namespace/</guid>
+      <description>NameSpace(上) Linux Namespace是Linux提供的一种内核级别环境隔离的方法。很早以前的Unix有一个叫chroot的系统调用（通过修改根目录把用户jail到一个特定目录下），chroot提供了一种简单的隔离模式：chroot内部的文件系统无法访问外部的内容。Linux Namespace在此基础上，提供了对UTS、IPC、mount、PID、network、User等的隔离机制。 举个例子，Linux下的超级父亲进程的PID是1，所以，同chroot一样，如果我们可以把用户的进程空间jail到某个进程分支下，并像chroot那样让其下面的进程 看到的那个超级父进程的PID为1，于是就可以达到资源隔离的效果了（不同的PID namespace中的进程无法看到彼此）
+ Linux Namespace 有如下种类     分类 系统调用参数 相关内核版本     Mount namespaces CLONE_NEWNS Linux 2.4.19   UTS namespaces CLONE_NEWNS Linux 2.6.19   IPC namespaces CLONE_NEWIPC Linux 2.6.19   PID namespaces CLONE_NEWPID Linux 2.6.24   Network namespaces CLONE_NEWNET Linux 2.6.29   User namespaces CLONE_NEWUSER Linux 2.6.23    主要的三个系统调用
+ clone() – 实现线程的系统调用，用来创建一个新的进程，并可以通过设计上述参数达到隔离 unshare() – 使某进程脱离某个namespace setns() – 把某进程加入到某个namespace</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WARNING on panda power!</title>
+    <link>https://cyboca.ga/tags/warning/</link>
+    <description>Recent content in WARNING on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 14:24:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/warning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker创建容器报错:WARNING:IPv4_forwarding_is_disabled.md</title>
+      <link>https://cyboca.ga/post/frank/docker%E6%8A%A5%E9%94%99warningipv4_forwarding_is_disabled/</link>
+      <pubDate>Sun, 17 Nov 2019 14:24:00 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker%E6%8A%A5%E9%94%99warningipv4_forwarding_is_disabled/</guid>
+      <description>问题：
+Docker 创建容器的时候报错WARNING: IPv4 forwarding is disabled. Networking will not work.
+解决方法：
+1、修改sysctl.conf
+#vi /etc/sysctl.conf
+2、新增一行
+net.ipv4.ip_forward=1
+3、查看是否修改成功
+#sysctl net.ipv4.ip_forward （返回为“net.ipv4.ip_forward = 1”，表示成功）
+4、重启网络服务
+#systemctl restart network
+5、完成以后，删除错误的容器，再次创建新容器，就不再报错了。</description>
+    </item>
+    
+  </channel>
+</rss>

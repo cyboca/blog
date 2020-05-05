@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on panda power!</title>
+    <link>https://cyboca.ga/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 15 Dec 2019 22:40:33 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>NetworkPolicy</title>
+      <link>https://cyboca.ga/post/emiya/networkpolicy/</link>
+      <pubDate>Sun, 15 Dec 2019 22:40:33 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/networkpolicy/</guid>
+      <description>NetWorkPolicy NetworkPloicy即网络策略（访问控制）；定义容器组(pod)与其他容器组以及endpoint进行通信；networkPolisy资源使用pod标签来选择pod，并定义规则
+networkpolicy的实现需要特定的网络组件的支持;
+1、实验环境准备 如上图所示：新建两个命令空间ns1和ns2并且为两个命名空间分别添加两个标签；创建上图中的三和deployment（过程略）用于测试网络连通性
+2、NetworkPolicy配置以及测试 如上图所示默认情况下相同命令空间下的pod和不同命名空间下的pod是可以相互访问的，如果需要做特定的访问控制需要用到networkpolicy这一资源
+2.1 deny all [root@node01 networkpolicy]# cat default-netpol.yaml apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default namespace: ns1 spec: podSelector: {} policyTypes: - Ingress ingress: [root@node01 networkpolicy]# kubectl apply -f default-netpol.yaml networkpolicy.networking.k8s.io &amp;#34;default&amp;#34; created [root@node01 networkpolicy]# 如上图所示ns1命令空间下的pod网络被隔离了
+2.2 allow all(默认) [root@node01 networkpolicy]# cat default-netpol.yaml apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default namespace: ns1 spec: podSelector: {} policyTypes: - Ingress ingress: - {} [root@node01 networkpolicy]# kubectl apply -f default-netpol.</description>
+    </item>
+    
+    <item>
+      <title>Headless service</title>
+      <link>https://cyboca.ga/post/emiya/headless-service/</link>
+      <pubDate>Sun, 24 Nov 2019 23:40:33 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/headless-service/</guid>
+      <description>kubernetes之Headless 1、简介 service的cluster ip工作原理：kube-proxy 会监视 kubernetes 控制节点对 service 对象和 endpoints 对象的添加和移除。对每个 service，它会添加iptables 规则，从而捕获到达该 Service 的 clusterIP 和端口的请求，进而将请求重定向到 service 任意一组 backend pod 中; 对于每个 endpoints 对象，它也会添加iptables规则，这个规则会选择一个 backend pod 组合
+headless service也是一种service，不同的是不会为headless service分配cluster ip，没有cluster ip，kube-proxy 并不处理此类服务，而且kubernetes也不会为它们进行负载均衡和路由
+2、service和headless service对比 2.1为应用添加service并测试解析结果 [root@node01 headless]# cat svc-nginx.yaml apiVersion: v1 kind: Service metadata: name: nginx namespace: emiya spec: type: NodePort ports: - name: nginx protocol: TCP port: 80 nodePort: 30010 selector: app: nginx 部署并测试service name解析
+如图所示，从上面的结果中我们可以看到虽然service有2个endpoint，但是dns查询时只会返回service的cluster-ip的地址。具体client访问的是哪个real server，是由iptables来决定的</description>
+    </item>
+    
+    <item>
+      <title>Traefik</title>
+      <link>https://cyboca.ga/post/emiya/traefik/</link>
+      <pubDate>Sun, 24 Nov 2019 23:40:33 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/traefik/</guid>
+      <description>Traefik部署 需求
+   镜像名 版本     traefik v1.65    1、创建rbac授权 [root@node01 traefik]# cat rbac.yaml apiVersion: v1 kind: ServiceAccount metadata: name: traefik-ingress-controller namespace: kube-system --- kind: ClusterRole apiVersion: rbac.authorization.k8s.io/v1beta1 metadata: name: traefik-ingress-controller rules: - apiGroups: - &amp;#34;&amp;#34; resources: - services - endpoints - secrets verbs: - get - list - watch - apiGroups: - extensions resources: - ingresses verbs: - get - list - watch --- kind: ClusterRoleBinding apiVersion: rbac.</description>
+    </item>
+    
+    <item>
+      <title>k8s官方文档-组件(1.16版)</title>
+      <link>https://cyboca.ga/post/makemon/kubernetes-components/</link>
+      <pubDate>Mon, 18 Nov 2019 02:11:05 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/makemon/kubernetes-components/</guid>
+      <description>Kubernetes Components(K8s组件) 原文地址 When you deploy Kubernetes, you get a cluster.
+ 部署Kubernetes时，您将获得一个集群
+ A cluster is a set of machines, called nodes, that run containerized applications managed by Kubernetes. A cluster has at least one worker node and at least one master node.
+ 集群是一组计算机，称为节点，它们运行由Kubernetes管理的容器化应用程序。集群具有至少一个工作节点和至少一个主节点
+ The worker node(s) host the pods that are the components of the application. The master node(s) manages the worker nodes and the pods in the cluster.</description>
+    </item>
+    
+    <item>
+      <title>Annotations Nginx Ingress</title>
+      <link>https://cyboca.ga/post/emiya/annotations-nginx-ingress/</link>
+      <pubDate>Sun, 17 Nov 2019 19:09:20 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/annotations-nginx-ingress/</guid>
+      <description>nginx ingress功能测试说明 [TOC]
+1、ingress.class  格式：kubernetes.io/ingress.class: &amp;ldquo;nginx&amp;rdquo; 说明：设置ingress 类型  2、use-regex  格式：nginx.ingress.kubernetes.io/use-regex: &amp;ldquo;true&amp;rdquo;
+ 说明：开启use-regex，启用path的正则匹配
+  3、app-root  格式：nginx.ingress.kubernetes.io/app-root string
+ 功能：重定向到指定目录
+  4、rewrite-target  格式：nginx.ingress.kubernetes.io/rewrite-target: path/url
+ 说明:重写规则、支持正则表达式
+ 示例：
+  nginx.ingress.kubernetes.io/rewrite-target: https://www.baidu.com
+nginx.ingress.kubernetes.io/rewrite-target: /
+5、configuration-snippet  格式：nginx.ingress.kubernetes.io/configuration-snippet: |
+ 说明：支持nginx规则
+ 示例：
+  nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/(.) http://www.baidu.com/ nginx.ingress.kubernetes.io/configuration-snippet: | rewrite /ana /animal/; nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/animal(/|$)?(.) /$2/ break;
+6、server-alias  格式：nginx.ingress.kubernetes.io/server-alias: &amp;ldquo;,&amp;ldquo;</description>
+    </item>
+    
+    <item>
+      <title>安装Nginx Ingress 0.21.0</title>
+      <link>https://cyboca.ga/post/emiya/nginx-ingress-0.21.0/</link>
+      <pubDate>Sun, 17 Nov 2019 19:06:11 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/nginx-ingress-0.21.0/</guid>
+      <description>安装nginx-ingress [toc]
+示例环境：
+   镜像名 版本 备注     defaultbackend 1.4    nginx-ingress-controller 0.21.0 小于该版本的经过测试部分功能无法使用    1、创建default-http-backend 用户后端的代理，当访问错误的url/path时会代理到此处
+apiVersion: apps/v1 kind: Deployment metadata: name: default-http-backend labels: app: default-http-backend namespace: ingress-nginx spec: replicas: 1 selector: matchLabels: app: default-http-backend template: metadata: labels: app: default-http-backend spec: terminationGracePeriodSeconds: 60 containers: - name: default-http-backend # Any image is permissible as long as: # 1. It serves a 404 page at / # 2.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Redis Cluster</title>
+      <link>https://cyboca.ga/post/emiya/kubernetes-redis-cluster/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:56 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/kubernetes-redis-cluster/</guid>
+      <description>kubernetes部署redis集群 [TOC]
+   镜像 版本 备注     redis.tar alpine    redis-trib.tar dockerfile构建 初始化redis集群    1、创建NFS存储 说明：创建NFS存储主要是为了给Redis提供稳定的后端存储，当Redis的Pod重启或迁移后，依然能获得原先的数据。这里，我们先要创建NFS，然后通过使用PV为Redis挂载一个远程的NFS路径
+/pv 192.168.10.0/24(rw,sync,all_squash) rw表示读写权限；all_squash 表示客户机上的任何用户访问该共享目录时都映射成服务器上的匿名用户（默认为nfsnobody）
+赋予权限:
+chmod -R 777 /pv 挂载到本地测试
+mount.nfs 192.168.10.200:/pv /pv  2、创建pv [root@node01 yml]# cat pv.yml apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv1 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.168.10.21 path: &amp;#34;/pv/pv1&amp;#34; --- apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv2 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes Rbac</title>
+      <link>https://cyboca.ga/post/emiya/kubernetes-rbac/</link>
+      <pubDate>Sun, 10 Nov 2019 22:53:48 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/kubernetes-rbac/</guid>
+      <description>Kubernetes使用RBAC授权 [TOC]
+示例环境：
+   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书
+openssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj &amp;#34;/CN=emiya&amp;#34; openssl x509 -req -in emiya.csr -CA etcd/ca.pem -CAkey etcd/ca-key.pem -CAcreateserial -out emiya.crt 2、set-cluster apiserver端口因集群而异，不一定是16443
+kubectl config set-cluster emiya --certificate-authority=/etc/kubernetes/cert/ca.pem --embed-certs=true --server=https://192.168.10.20:16443 --kubeconfig=/etc/kubernetes/config 部分选项说明：
+ &amp;ndash;client-key=&amp;ldquo;&amp;rdquo;: TLS使用的客户端密钥路径。 &amp;ndash;cluster=&amp;ldquo;&amp;rdquo;: 指定使用的kubeconfig配置文件中的集群名。 &amp;ndash;context=&amp;ldquo;&amp;rdquo;: 指定使用的kubeconfig配置文件中的环境名。 &amp;ndash;server=&amp;ldquo;&amp;rdquo;: Kubernetes API Server的地址和端口号 &amp;ndash;certificate-authority=&amp;ldquo;&amp;rdquo;: 用以进行认证授权的.</description>
+    </item>
+    
+    <item>
+      <title>Ingress Tls</title>
+      <link>https://cyboca.ga/post/emiya/ingress-tls/</link>
+      <pubDate>Sun, 10 Nov 2019 16:46:17 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/ingress-tls/</guid>
+      <description>Ingress的tls功能测试 1、修改ingress-controller参数 查看是否有
+--enable-ssl-passthrough  2、部署deployment、service [root@node01 emiya]# cat deploy.yml apiVersion: apps/v1 kind: Deployment metadata: name: mysql namespace: emiya spec: replicas: 1 selector: matchLabels: app: mysql template: metadata: labels: app: mysql spec: containers: - name: mysql image: 192.168.10.30:5000/emiya/mysql:5.7.21 resources: limits: cpu: 0.3 memory: 400Mi ports: - containerPort: 3306 env: - name: MYSQL_ROOT_PASSWORD value: &amp;#34;123456&amp;#34; --- apiVersion: v1 kind: Service metadata: name: mysql namespace: emiya spec: ports: - port: 3306 selector: app: mysql --- apiVersion: apps/v1 kind: Deployment metadata: name: myweb namespace: emiya spec: selector: matchLabels: app: myweb replicas: 1 template: metadata: labels: app: myweb spec: containers: - name: tomcat-app image: 192.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Performance optimization on panda power!</title>
+    <link>https://cyboca.ga/tags/performance-optimization/</link>
+    <description>Recent content in Performance optimization on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 21:36:07 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/performance-optimization/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CpuContextSwitch</title>
+      <link>https://cyboca.ga/post/cxn/cpucontextswitch/</link>
+      <pubDate>Sun, 17 Nov 2019 21:36:07 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/cpucontextswitch/</guid>
+      <description>Cpu context switch 查看系统上下文切换情况
+过多的上下文切换，会把cpu时间消耗在寄存器、内核栈以及虚拟内存等数据的保存和恢复上，缩短进程真正运行的时间，大大降低了系统性能
+vmstat主要用来分析系统内存使用情况，也可以用来分析cpu上下文切换和中断的次数
+[root@node001 ~]# vmstat 5 procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r b swpd free buff cache si so bi bo in cs us sy id wa st 0 0 0 7005360 91564 818900 0 0 0 0 25 33 0 0 100 0 0 我们一起来看这个结果，你可以先试着自己解读每列的含义。在这里，需要特别关注的四列内容：
+ cs（context switch）是每秒上下文切换的次数。 in（interrupt）则是每秒中断的次数。 r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数。 b（Blocked）则是处于不可中断睡眠状态的进程数。  可以看到，这个例子中的上下文切换次数 cs 是 33 次，而系统中断次数 in 则是 25 次，而就绪队列长度 r 和不可中断状态进程数 b 都是 0。</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Thin Provisioning - panda power!</title>
+  <meta name="description" content="Thin Provisioning Snapshot 演示 下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。
+首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：
+[root@node001 ~]# dd if=/dev/zero of=/tmp/data.img bs=1K count=1 seek=10M 1&#43;0 records in 1&#43;0 records out 1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB/s [root@node001 ~]# dd if=/dev/zero of=/tmp/meta.data.img bs=1K count=1 seek=1G 1&#43;0 records in 1&#43;0 records out 1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB/s 注意命令中seek选项，其表示为略过of选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。
+[root@node001 ~]# ls -lsh /tmp/data.img 12K -rw-r--r--. 1 root root 11G Aug 25 23:01 /tmp/data.">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/cxn\/thinprovisioningsnapshot\/",
+          "name": "Thin provisioning"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "cxn"
+  },
+  "headline": "Thin Provisioning",
+  "description" : "Thin Provisioning Snapshot 演示 下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。\n首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：\n[root@node001 ~]# dd if=\/dev\/zero of=\/tmp\/data.img bs=1K count=1 seek=10M 1\x2b0 records in 1\x2b0 records out 1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB\/s [root@node001 ~]# dd if=\/dev\/zero of=\/tmp\/meta.data.img bs=1K count=1 seek=1G 1\x2b0 records in 1\x2b0 records out 1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB\/s 注意命令中seek选项，其表示为略过of选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。\n[root@node001 ~]# ls -lsh \/tmp\/data.img 12K -rw-r--r--. 1 root root 11G Aug 25 23:01 \/tmp\/data.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  511 ,
+  "datePublished" : "2019-11-17T20:33:48",
+  "dateModified" : "2019-11-17T20:33:48",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "linux, docker, Thin Provisioning" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/cxn\/thinprovisioningsnapshot\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Thin Provisioning" />
+<meta property="og:description" content="Thin Provisioning Snapshot 演示 下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。
+首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：
+[root@node001 ~]# dd if=/dev/zero of=/tmp/data.img bs=1K count=1 seek=10M 1&#43;0 records in 1&#43;0 records out 1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB/s [root@node001 ~]# dd if=/dev/zero of=/tmp/meta.data.img bs=1K count=1 seek=1G 1&#43;0 records in 1&#43;0 records out 1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB/s 注意命令中seek选项，其表示为略过of选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。
+[root@node001 ~]# ls -lsh /tmp/data.img 12K -rw-r--r--. 1 root root 11G Aug 25 23:01 /tmp/data.">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/cxn/thinprovisioningsnapshot/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="Thin Provisioning" />
+  <meta name="twitter:description" content="Thin Provisioning Snapshot 演示 下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。
+首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：
+[root@node001 ~]# dd if=/dev/zero of=/tmp/data.img bs=1K …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Thin Provisioning</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 17, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;3&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;511&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;cxn
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h3 id="thin-provisioning-snapshot-演示">Thin Provisioning Snapshot 演示</h3>
+
+<p>下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。</p>
+
+<p>首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# dd if=/dev/zero of=/tmp/data.img bs=1K count=1 seek=10M
+1+0 records in
+1+0 records out
+1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB/s
+ 
+[root@node001 ~]# dd if=/dev/zero of=/tmp/meta.data.img bs=1K count=1 seek=1G
+1+0 records in
+1+0 records out
+1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB/s</pre></div>
+<p>注意命令中<code>seek</code>选项，其表示为略过<code>of</code>选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# ls -lsh /tmp/data.img
+12K -rw-r--r--. 1 root root 11G Aug 25 23:01 /tmp/data.img
+
+[root@node001 ~]# ls -slh /tmp/meta.data.img
+4.0K -rw-r--r--. 1 root root 101M Aug 25 23:17 /tmp/meta.data.img</pre></div>
+<p>然后，我们为这个文件创建一个loopback设备。（loop2015和loop2016是我乱取的两个名字）</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# losetup /dev/loop2015 /tmp/data.img
+[root@node001 ~]# losetup /dev/loop2016 /tmp/meta.data.img
+ 
+[root@node001 ~]# losetup -a
+/dev/loop2015: [64768]:103991768 (/tmp/data.img)
+/dev/loop2016: [64768]:103991765 (/tmp/meta.data.img)</pre></div>
+<p>现在，我们为这个设备建一个Thin Provisioning的Pool，用dmsetup命令：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# dmsetup create hchen-thin-pool \
+                  --table &#34;0 20971522 thin-pool /dev/loop2016 /dev/loop2015 \
+                           128 65536 1 skip_block_zeroing&#34;</pre></div>
+<ul>
+<li>dmsetup create是用来创建thin pool的命令</li>
+<li>hchen-thin-pool 是自定义的一个pool名，不冲突就好。</li>
+<li>–table是这个pool的参数设置
+
+<ul>
+<li>0代表起的sector位置</li>
+<li>20971522代码结句的sector号，前面说过，一个sector是512字节，所以，20971522个正好是10GB</li>
+<li>/dev/loop2016是meta文件的设备（前面我们建好了）</li>
+<li>/dev/loop2015是data文件的设备（前面我们建好了）</li>
+<li>128是最小的可分配的sector数</li>
+<li>65536是最少可用sector的water mark，也就是一个threshold</li>
+<li>1 代表有一个附加参数</li>
+<li>skip_block_zeroing是个附加参数，表示略过用0填充的块</li>
+</ul></li>
+</ul>
+
+<p>然后，我们就可以看到一个Device Mapper的设备了：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# ll /dev/mapper/hchen-thin-pool
+lrwxrwxrwx. 1 root root 7 Aug 25 23:24 /dev/mapper/hchen-thin-pool -&gt; ../dm-4</pre></div>
+<p>接下来，我们的初始还没有完成，还要创建一个Thin Provisioning 的 Volume：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# dmsetup message /dev/mapper/hchen-thin-pool 0 &#34;create_thin 0&#34;
+[root@node001 ~]# dmsetup create hchen-thin-volumn-001 \
+            --table &#34;0 2097152 thin /dev/mapper/hchen-thin-pool 0&#34;</pre></div>
+<p>其中：</p>
+
+<ul>
+<li>第一个命令中的create_thin是关键字，后面的0表示这个Volume的device 的 id</li>
+<li>第二个命令，是真正的为这个Volumn创建一个可以mount的设备，名字叫hchen-thin-volumn-001。2097152只有1GB</li>
+</ul>
+
+<p>我们还要格式化一下：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# mkfs.ext4 /dev/mapper/hchen-thin-volumn-001
+mke2fs 1.42.9 (28-Dec-2013)
+Discarding device blocks: done
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=16 blocks, Stripe width=16 blocks
+65536 inodes, 262144 blocks
+13107 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=268435456
+8 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks:
+32768, 98304, 163840, 229376
+ 
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done</pre></div>
+<p>好了，我们可以mount了（下面的命令中，我还创建了一个文件）</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# mkdir -p /mnt/base
+[root@node001 ~]# mount /dev/mapper/hchen-thin-volumn-001 /mnt/base
+[root@node001 ~]# echo &#34;hello world, I am a base&#34; &gt; /mnt/base/id.txt
+[root@node001 ~]# cat /mnt/base/id.txt
+hello world, I am a base</pre></div>
+<p>好了，接下来，我们来看看snapshot怎么搞：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# dmsetup message /dev/mapper/hchen-thin-pool 0 &#34;create_snap 1 0&#34;
+[root@node001 ~]# dmsetup create mysnap1 \
+                   --table &#34;0 2097152 thin /dev/mapper/hchen-thin-pool 1&#34;
+ 
+[root@node001 ~]# ll /dev/mapper/mysnap1
+lrwxrwxrwx. 1 root root 7 Aug 25 23:49 /dev/mapper/mysnap1 -&gt; ../dm-5</pre></div>
+<p>上面的命令中：</p>
+
+<ul>
+<li>第一条命令是向hchen-thin-pool发一个create_snap的消息，后面跟两个id，第一个是新的dev id，第二个是要从哪个已有的dev id上做snapshot（0这个dev id是我们前面就创建了了）</li>
+<li>第二条命令是创建一个mysnap1的device，并可以被mount。</li>
+</ul>
+
+<p>下面我们来看看：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# mkdir -p /mnt/mysnap1
+[root@node001 ~]# mount /dev/mapper/mysnap1 /mnt/mysnap1
+ 
+[root@node001 ~]# ll /mnt/mysnap1/
+total 20
+-rw-r--r--. 1 root root 25 Aug 25 23:46 id.txt
+drwx------. 2 root root 16384 Aug 25 23:43 lost+found
+ 
+[root@node001 ~]# cat /mnt/mysnap1/id.txt
+hello world, I am a base</pre></div>
+<p>我们来修改一下/mnt/mysnap1/id.txt，并加上一个snap1.txt的文件：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# echo &#34;I am snap1&#34; &gt;&gt; /mnt/mysnap1/id.txt
+[root@node001 ~]# echo &#34;I am snap1&#34; &gt; /mnt/mysnap1/snap1.txt
+ 
+[root@node001 ~]# cat /mnt/mysnap1/id.txt
+hello world, I am a base
+I am snap1
+ 
+[root@node001 ~]# cat /mnt/mysnap1/snap1.txt
+I am snap1</pre></div>
+<p>我们再看一下/mnt/base，你会发现没有什么变化：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# ls /mnt/base
+id.txt      lost+found
+[root@node001 ~]# cat /mnt/base/id.txt
+hello world, I am a base</pre></div>
+<p>应该已经看到了分层镜像的样子了</p>
+
+<p>你还要继续在刚才的snapshot上再建一个snapshot</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# dmsetup message /dev/mapper/hchen-thin-pool 0 &#34;create_snap 2 1&#34;
+[root@node001 ~]# dmsetup create mysnap2 \
+                   --table &#34;0 2097152 thin /dev/mapper/hchen-thin-pool 2&#34;
+ 
+[root@node001 ~]# ll /dev/mapper/mysnap2
+lrwxrwxrwx. 1 root root 7 Aug 25 23:52 /dev/mapper/mysnap1 -&gt; ../dm-7
+ 
+[root@node001 ~]# mkdir -p /mnt/mysnap2
+[root@node001 ~]# mount /dev/mapper/mysnap2 /mnt/mysnap2
+[root@node001 ~]#  ls /mnt/mysnap2
+id.txt  lost+found  snap1.txt</pre></div>
+<p>Snapshot来自LVM（Logic Volumn Manager），它可以在不中断服务的情况下为某个device打一个快照。</p>
+
+<p>Snapshot是Copy-On-Write的，也就是说，只有发生了修改，才会对对应的内存进行拷贝。</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/linux/">linux</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/docker/">docker</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/thin-provisioning/">Thin Provisioning</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fthinprovisioningsnapshot%2f&amp;text=Thin%20Provisioning&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fthinprovisioningsnapshot%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fthinprovisioningsnapshot%2f&amp;title=Thin%20Provisioning" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fthinprovisioningsnapshot%2f&amp;title=Thin%20Provisioning" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fthinprovisioningsnapshot%2f&amp;title=Thin%20Provisioning" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fthinprovisioningsnapshot%2f&amp;description=Thin%20Provisioning" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/cxn/cpucontextswitch/">CpuContextSwitch</a></li>
+                
+                    <li><a href="/post/cxn/devicemapper/">DeviceMapper</a></li>
+                
+                    <li><a href="/post/cyboca/nfs%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/">NFS</a></li>
+                
+                    <li><a href="/post/syn/dns1/">DNS&amp;BIND(1)</a></li>
+                
+                    <li><a href="/post/cxn/cgroup/">Cgroup</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/emiya/annotations-nginx-ingress/" data-toggle="tooltip" data-placement="top" title="Annotations Nginx Ingress">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/cxn/devicemapper/" data-toggle="tooltip" data-placement="top" title="DeviceMapper">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

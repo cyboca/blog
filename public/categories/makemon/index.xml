@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>makemon on panda power!</title>
+    <link>https://cyboca.ga/categories/makemon/</link>
+    <description>Recent content in makemon on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 25 Nov 2019 05:11:05 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/categories/makemon/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>DCE内核参数优化含义</title>
+      <link>https://cyboca.ga/post/makemon/dce%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96%E5%90%AB%E4%B9%89/</link>
+      <pubDate>Mon, 25 Nov 2019 05:11:05 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/makemon/dce%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96%E5%90%AB%E4%B9%89/</guid>
+      <description>DCE内核参数优化含义 #开启ip6tables对bridge的数据处理 net.bridge.bridge-nf-call-ip6tables=1	#开启iptables对bridge的数据进行处理 net.bridge.bridge-nf-call-iptables=1 #开启arptables对bridge的数据进行处理 net.bridge.bridge-nf-call-arptables=1 #开启路由转发 net.ipv4.ip_forward=1 #设置防火墙最大连接跟踪数 net.netfilter.nf_conntrack_max=2097152 #nf_conntrack的tcp fin_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30 #nf_conntrack的tcp time_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_time_wait=30 #nf_conntrack的tcp close_wait记录时间15s net.netfilter.nf_conntrack_tcp_timeout_close_wait=15 #nf_conntrack的tcp established记录时间2小时 net.netfilter.nf_conntrack_tcp_timeout_established=7200 #保持在FIN-WAIT-2状态的时间为30s net.ipv4.tcp_fin_timeout=30 #开启SYN Cookies net.ipv4.tcp_syncookies=1 #表示SYN队列的长度 net.ipv4.tcp_max_syn_backlog=16384 #表示当keepalive起用的时候，TCP发送keepalive消息的频度，10分钟 net.ipv4.tcp_keepalive_time=600 #TCP发送keepalive探测以确定该连接已经断开的次数 net.ipv4.tcp_keepalive_probes=3 #探测消息发送的频率 net.ipv4.tcp_keepalive_intvl=30 #显示或设定 Linux 核心在回应 SYN 要求时会尝试多少次重新发送初始 SYN,ACK 封包后才决定放弃。 net.ipv4.tcp_synack_retries=3 #对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。 net.ipv4.tcp_syn_retries=3 #表示系统同时保持TIME_WAIT套接字的最大数量 net.ipv4.tcp_max_tw_buckets=36000 #表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_reuse=1 #表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_tw_recycle=1 #允许使用的端口 &amp;#34;net.ipv4.ip_local_port_range=1024 65000&amp;#34; #定义了系统中每一个端口最大的监听队列的长度 net.core.somaxconn=65535 #该参数决定了, 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=16384 #系统所能处理不属于任何进程的TCP sockets最大数量 net.ipv4.tcp_max_orphans=8192	 网络参考</description>
+    </item>
+    
+    <item>
+      <title>k8s官方文档-组件(1.16版)</title>
+      <link>https://cyboca.ga/post/makemon/kubernetes-components/</link>
+      <pubDate>Mon, 18 Nov 2019 02:11:05 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/makemon/kubernetes-components/</guid>
+      <description>Kubernetes Components(K8s组件) 原文地址 When you deploy Kubernetes, you get a cluster.
+ 部署Kubernetes时，您将获得一个集群
+ A cluster is a set of machines, called nodes, that run containerized applications managed by Kubernetes. A cluster has at least one worker node and at least one master node.
+ 集群是一组计算机，称为节点，它们运行由Kubernetes管理的容器化应用程序。集群具有至少一个工作节点和至少一个主节点
+ The worker node(s) host the pods that are the components of the application. The master node(s) manages the worker nodes and the pods in the cluster.</description>
+    </item>
+    
+    <item>
+      <title>浪潮服务器Ctrl&#43;A快捷键阵列卡配置步骤</title>
+      <link>https://cyboca.ga/post/makemon/raid-ctrl-a/</link>
+      <pubDate>Thu, 14 Nov 2019 01:08:05 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/makemon/raid-ctrl-a/</guid>
+      <description>浪潮服务器Ctrl+A快捷键阵列卡配置步骤 一、RAID卡阵列配置 1.1 查看Raid状态 服务器开机自检到浪潮logo画面后，下一步就会进入Raid卡自检过程，此时显示器上会出现Ctrl -A提示，如下图：
+Optimal表示raid状态正常，Degraded表示有一块硬盘掉线，阵列降级，Offline表示有两块或以上硬盘掉线，阵列不可用 按下Ctrl -A组合键后，自检完成就会进入Raid卡配置界面，如下图：
+选择Array Configuration Utility进入配置主界面
+选择”Manage Arrays“，此时右侧会出现当前配置的raid信息。
+上下键选择要查看的raid VD，回车选择。此时红框内显示阵列状态。OPTIMAL是正常状态。Array Size后显示的是阵列大小。
+1.2 删除Raid阵列 首先参考”查看raid“章节，进入raid配置界面，在Manage Array上按回车
+按delete则弹出删除界面，选择delete后阵列将被删除。
+再次查看已经没有raid信息
+1.3 大存储下Raid配置建议 当存储比较大且安装Window2008R2时，建议先配置一个较小的虚拟盘（VD），进行操作系统的安装。之后安装结束后，再配置另一个较大的虚拟盘（VD）。
+比如创建Raid5时（具体步骤请参考后续各种raid配置章节），在创建VD时进行的大小配置，此时显示的是默认大小（最大可使用空间）。
+在此处输入Raid阵列大小，默认为最大空间，这里可以手工修改，建议改成100G-200G即可（只要小于2TB都可以，只用来当做C盘安装系统）。
+之后，在安装完操作系统后，可以将后续很大的空间创建VD，操作系统会自动识别。这样就避免了安装Windows 2008时C盘所在磁盘不能超过2TB问题。
+1.4 Raid0的配置 首先参考”查看raid“章节，进入raid配置界面。选择Create Array进入raid配置界面。
+注意：在raid开始配置时，如果硬盘不能选择，请先对硬盘做初始化操作，可参考后续硬盘初始化章节。 特别提醒：不要初始化有数据的硬盘！！！
+1）选择硬盘，这里以四块硬盘为例，按空格键选择
+2）选择raid0（注意，如果您需要单盘配置raid0，则这里选择volume）
+3）输入Array Label，比如volume1
+4）输入Array Size（卷大小），默认容量为最大容量
+5）选择条带大小，默认为256KB
+6）选择Read Caching（读策略），默认为enabled：
+7）选择Write Caching（写策略），默认为Enable always
+选择Enable always后，会有确认提示，按Y键
+再次确认，按Y键
+8）选择Raid创建方式，建议选择Quick init（快速初始化）
+9）最后选择【Done】回车，出现完成提示时按任意键退出。
+完成配置后可以在Manage Array中查看阵列状态，其中Optimal为正常，Degraded为阵列降级，代表有硬盘掉线，Offline为阵列掉线。
+1.5 Raid1的配置 首先参考”查看raid“章节，进入raid配置界面。选择Create Array进入raid配置界面。
+注意：在raid开始配置时，如果硬盘不能选择，请先对硬盘做初始化操作，可参考后续硬盘初始化章节。 特别提醒：不要初始化有数据的硬盘！！！
+1) 选择2块硬盘，按空格键选择
+2) 选择Raid级别
+3）输入Array Label（卷标），如volume1
+4）输入Array Size（卷大小），默认容量为最大容量</description>
+    </item>
+    
+  </channel>
+</rss>

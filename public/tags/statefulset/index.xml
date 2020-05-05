@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>StatefulSet on panda power!</title>
+    <link>https://cyboca.ga/tags/statefulset/</link>
+    <description>Recent content in StatefulSet on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 11 Nov 2019 00:00:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/statefulset/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kubernetes Redis Cluster</title>
+      <link>https://cyboca.ga/post/emiya/kubernetes-redis-cluster/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:56 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/kubernetes-redis-cluster/</guid>
+      <description>kubernetes部署redis集群 [TOC]
+   镜像 版本 备注     redis.tar alpine    redis-trib.tar dockerfile构建 初始化redis集群    1、创建NFS存储 说明：创建NFS存储主要是为了给Redis提供稳定的后端存储，当Redis的Pod重启或迁移后，依然能获得原先的数据。这里，我们先要创建NFS，然后通过使用PV为Redis挂载一个远程的NFS路径
+/pv 192.168.10.0/24(rw,sync,all_squash) rw表示读写权限；all_squash 表示客户机上的任何用户访问该共享目录时都映射成服务器上的匿名用户（默认为nfsnobody）
+赋予权限:
+chmod -R 777 /pv 挂载到本地测试
+mount.nfs 192.168.10.200:/pv /pv  2、创建pv [root@node01 yml]# cat pv.yml apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv1 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.168.10.21 path: &amp;#34;/pv/pv1&amp;#34; --- apiVersion: v1 kind: PersistentVolume metadata: name: nfs-pv2 spec: capacity: storage: 200M accessModes: - ReadWriteMany nfs: server: 192.</description>
+    </item>
+    
+  </channel>
+</rss>

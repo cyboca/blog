@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes Rbac - panda power!</title>
+  <meta name="description" content="Kubernetes使用RBAC授权 [TOC]
+示例环境：
+   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书
+openssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj &#34;/CN=emiya&#34; openssl x509 -req -in emiya.csr -CA etcd/ca.pem -CAkey etcd/ca-key.pem -CAcreateserial -out emiya.crt 2、set-cluster apiserver端口因集群而异，不一定是16443
+kubectl config set-cluster emiya --certificate-authority=/etc/kubernetes/cert/ca.pem --embed-certs=true --server=https://192.168.10.20:16443 --kubeconfig=/etc/kubernetes/config 部分选项说明：
+ &ndash;client-key=&ldquo;&rdquo;: TLS使用的客户端密钥路径。 &ndash;cluster=&ldquo;&rdquo;: 指定使用的kubeconfig配置文件中的集群名。 &ndash;context=&ldquo;&rdquo;: 指定使用的kubeconfig配置文件中的环境名。 &ndash;server=&ldquo;&rdquo;: Kubernetes API Server的地址和端口号 &ndash;certificate-authority=&ldquo;&rdquo;: 用以进行认证授权的.">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/emiya\/kubernetes-rbac\/",
+          "name": "Kubernetes rbac"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "emiya"
+  },
+  "headline": "Kubernetes Rbac",
+  "description" : "Kubernetes使用RBAC授权 [TOC]\n示例环境：\n   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书\nopenssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj \x26#34;\/CN=emiya\x26#34; openssl x509 -req -in emiya.csr -CA etcd\/ca.pem -CAkey etcd\/ca-key.pem -CAcreateserial -out emiya.crt 2、set-cluster apiserver端口因集群而异，不一定是16443\nkubectl config set-cluster emiya --certificate-authority=\/etc\/kubernetes\/cert\/ca.pem --embed-certs=true --server=https:\/\/192.168.10.20:16443 --kubeconfig=\/etc\/kubernetes\/config 部分选项说明：\n \x26ndash;client-key=\x26ldquo;\x26rdquo;: TLS使用的客户端密钥路径。 \x26ndash;cluster=\x26ldquo;\x26rdquo;: 指定使用的kubeconfig配置文件中的集群名。 \x26ndash;context=\x26ldquo;\x26rdquo;: 指定使用的kubeconfig配置文件中的环境名。 \x26ndash;server=\x26ldquo;\x26rdquo;: Kubernetes API Server的地址和端口号 \x26ndash;certificate-authority=\x26ldquo;\x26rdquo;: 用以进行认证授权的.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  248 ,
+  "datePublished" : "2019-11-10T22:53:48",
+  "dateModified" : "2019-11-10T22:53:48",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "Kubernetes, Rbac, Role, ClusterRole" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/emiya\/kubernetes-rbac\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Kubernetes Rbac" />
+<meta property="og:description" content="Kubernetes使用RBAC授权 [TOC]
+示例环境：
+   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书
+openssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj &#34;/CN=emiya&#34; openssl x509 -req -in emiya.csr -CA etcd/ca.pem -CAkey etcd/ca-key.pem -CAcreateserial -out emiya.crt 2、set-cluster apiserver端口因集群而异，不一定是16443
+kubectl config set-cluster emiya --certificate-authority=/etc/kubernetes/cert/ca.pem --embed-certs=true --server=https://192.168.10.20:16443 --kubeconfig=/etc/kubernetes/config 部分选项说明：
+ &ndash;client-key=&ldquo;&rdquo;: TLS使用的客户端密钥路径。 &ndash;cluster=&ldquo;&rdquo;: 指定使用的kubeconfig配置文件中的集群名。 &ndash;context=&ldquo;&rdquo;: 指定使用的kubeconfig配置文件中的环境名。 &ndash;server=&ldquo;&rdquo;: Kubernetes API Server的地址和端口号 &ndash;certificate-authority=&ldquo;&rdquo;: 用以进行认证授权的.">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/emiya/kubernetes-rbac/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="Kubernetes Rbac" />
+  <meta name="twitter:description" content="Kubernetes使用RBAC授权 [TOC]
+示例环境：
+   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书
+openssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Kubernetes Rbac</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 10, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;2&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;248&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;emiya
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h1 id="kubernetes使用rbac授权">Kubernetes使用RBAC授权</h1>
+
+<p>[TOC]</p>
+
+<p>示例环境：</p>
+
+<table>
+<thead>
+<tr>
+<th>节点名</th>
+<th>备注</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>node01</td>
+<td>主控节点</td>
+</tr>
+
+<tr>
+<td>node02</td>
+<td>容器节点</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="1-创建key和证书">1、创建key和证书</h2>
+
+<p>或者从etcd中拷贝证书</p>
+<div class="highlight"><pre class="chroma">openssl genrsa -out emiya.key 2048
+openssl req -new -key emiya.key -out emiya.csr -subj &#34;/CN=emiya&#34;
+openssl x509 -req -in emiya.csr -CA etcd/ca.pem -CAkey etcd/ca-key.pem -CAcreateserial -out emiya.crt</pre></div>
+<h2 id="2-set-cluster">2、set-cluster</h2>
+
+<p>apiserver端口因集群而异，不一定是16443</p>
+<div class="highlight"><pre class="chroma">kubectl config set-cluster emiya --certificate-authority=/etc/kubernetes/cert/ca.pem --embed-certs=true --server=https://192.168.10.20:16443 --kubeconfig=/etc/kubernetes/config</pre></div>
+<p>部分选项说明：</p>
+
+<ul>
+<li>&ndash;client-key=&ldquo;&rdquo;: TLS使用的客户端密钥路径。</li>
+<li>&ndash;cluster=&ldquo;&rdquo;: 指定使用的kubeconfig配置文件中的集群名。</li>
+<li>&ndash;context=&ldquo;&rdquo;: 指定使用的kubeconfig配置文件中的环境名。</li>
+<li>&ndash;server=&ldquo;&rdquo;: Kubernetes API Server的地址和端口号</li>
+<li>&ndash;certificate-authority=&ldquo;&rdquo;: 用以进行认证授权的.cert文件路径</li>
+<li>&ndash;embed-certs=false: 设置kuebconfig配置文件中用户选项中的embed-certs开关</li>
+<li>&ndash;client-certificate=&ldquo;&rdquo;: 设置kuebconfig配置文件中用户选项中的证书文件路径</li>
+</ul>
+
+<h2 id="3-set-credentials">3、set-credentials</h2>
+<div class="highlight"><pre class="chroma">kubectl config set-credentials emiya --client-certificate=/etc/kubernetes/cert/emiya.crt --client-key=/etc/kubernetes/cert/emiya.key --kubeconfig=/etc/kubernetes/config</pre></div>
+<h2 id="4-set-context">4、set-context</h2>
+<div class="highlight"><pre class="chroma">kubectl config set-context emiya --cluster=emiya --user=emiya --namespace=emiya --kubeconfig=/etc/kubernetes/config
+kubectl config use-context emiya --kubeconfig=/etc/kubernetes/config</pre></div>
+<h2 id="5-查看config文件">5、查看config文件</h2>
+<div class="highlight"><pre class="chroma">[root@node01 ~]# cat /etc/kubernetes/config 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /etc/kubernetes/cert/ca.pem
+    server: https://192.168.10.20:16443
+  name: emiya
+contexts:
+- context:
+    cluster: emiya
+    namespace: emiya
+    user: emiya
+  name: emiya
+current-context: emiya
+kind: Config
+preferences: {}
+users:
+- name: emiya
+  user:
+    client-certificate: /etc/kubernetes/cert/emiya.crt
+client-key: /etc/kubernetes/cert/emiya.key</pre></div>
+<p>将文件/etc/kubernetes/config拷贝至node02:/root/.kube/</p>
+
+<h2 id="6-创建role并绑定">6、创建role并绑定</h2>
+<div class="highlight"><pre class="chroma">[root@node01 emiya]# cat role-emiya.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: emiya-role
+  namespace: emiya
+rules:
+- apiGroups: [&#34;&#34;]
+  resources: [&#34;configmaps&#34;,&#34;endpoints&#34;,&#34;persistentvolumeclaims&#34;,&#34;pods&#34;,&#34;pods/log&#34;,&#34;services&#34;]
+  verbs: [&#34;get&#34;, &#34;list&#34;, &#34;watch&#34;, &#34;create&#34;, &#34;update&#34;, &#34;patch&#34;, &#34;delete&#34;]
+- apiGroups: [&#34;extensions&#34;, &#34;apps&#34;]
+  resources: [&#34;deployments&#34;,&#34;daemonsets&#34;,&#34;deployments/scale&#34;,&#34;ingresses&#34;,&#34;replicasets&#34;,&#34;replicasets/scale&#34;]
+  verbs: [&#34;get&#34;, &#34;list&#34;, &#34;watch&#34;, &#34;create&#34;, &#34;update&#34;, &#34;patch&#34;, &#34;delete&#34;]
+[root@node01 emiya]# cat rolebinding-emiya.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: emiya-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: emiya-role
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: emiya</pre></div>
+<h2 id="7-创建clusterrole并绑定">7、创建clusterrole并绑定</h2>
+<div class="highlight"><pre class="chroma">[root@node01 emiya]# cat clusterrole-emiya.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterrole-emiya
+rules:
+- apiGroups:
+  - &#34;&#34;
+  resources: [&#34;nodes&#34;,&#34;pods&#34;]
+  verbs: [&#34;get&#34;, &#34;list&#34;, &#34;watch&#34;]
+[root@node01 emiya]# cat clusterrolebinding-emiya.yaml 
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: clusterrolebinding-emiya
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: clusterrole-emiya
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: emiya</pre></div>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/kubernetes/">Kubernetes</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/rbac/">Rbac</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/role/">Role</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/clusterrole/">ClusterRole</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fkubernetes-rbac%2f&amp;text=Kubernetes%20Rbac&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fkubernetes-rbac%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fkubernetes-rbac%2f&amp;title=Kubernetes%20Rbac" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fkubernetes-rbac%2f&amp;title=Kubernetes%20Rbac" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fkubernetes-rbac%2f&amp;title=Kubernetes%20Rbac" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fkubernetes-rbac%2f&amp;description=Kubernetes%20Rbac" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/emiya/networkpolicy/">NetworkPolicy</a></li>
+                
+                    <li><a href="/post/emiya/headless-service/">Headless service</a></li>
+                
+                    <li><a href="/post/emiya/traefik/">Traefik</a></li>
+                
+                    <li><a href="/post/emiya/annotations-nginx-ingress/">Annotations Nginx Ingress</a></li>
+                
+                    <li><a href="/post/emiya/nginx-ingress-0.21.0/">安装Nginx Ingress 0.21.0</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/emiya/ingress-tls/" data-toggle="tooltip" data-placement="top" title="Ingress Tls">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/emiya/kubernetes-redis-cluster/" data-toggle="tooltip" data-placement="top" title="Kubernetes Redis Cluster">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

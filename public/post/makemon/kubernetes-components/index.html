@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>k8s官方文档-组件(1.16版) - panda power!</title>
+  <meta name="description" content="Kubernetes Components(K8s组件) 原文地址 When you deploy Kubernetes, you get a cluster.
+ 部署Kubernetes时，您将获得一个集群
+ A cluster is a set of machines, called nodes, that run containerized applications managed by Kubernetes. A cluster has at least one worker node and at least one master node.
+ 集群是一组计算机，称为节点，它们运行由Kubernetes管理的容器化应用程序。集群具有至少一个工作节点和至少一个主节点
+ The worker node(s) host the pods that are the components of the application. The master node(s) manages the worker nodes and the pods in the cluster.">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/makemon\/kubernetes-components\/",
+          "name": "K8s官方文档 组件(1.16版)"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "makemon"
+  },
+  "headline": "k8s官方文档-组件(1.16版)",
+  "description" : "Kubernetes Components(K8s组件) 原文地址 When you deploy Kubernetes, you get a cluster.\n 部署Kubernetes时，您将获得一个集群\n A cluster is a set of machines, called nodes, that run containerized applications managed by Kubernetes. A cluster has at least one worker node and at least one master node.\n 集群是一组计算机，称为节点，它们运行由Kubernetes管理的容器化应用程序。集群具有至少一个工作节点和至少一个主节点\n The worker node(s) host the pods that are the components of the application. The master node(s) manages the worker nodes and the pods in the cluster.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  1042 ,
+  "datePublished" : "2019-11-18T02:11:05",
+  "dateModified" : "2019-11-18T02:11:05",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "kubernetes" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/makemon\/kubernetes-components\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="k8s官方文档-组件(1.16版)" />
+<meta property="og:description" content="Kubernetes Components(K8s组件) 原文地址 When you deploy Kubernetes, you get a cluster.
+ 部署Kubernetes时，您将获得一个集群
+ A cluster is a set of machines, called nodes, that run containerized applications managed by Kubernetes. A cluster has at least one worker node and at least one master node.
+ 集群是一组计算机，称为节点，它们运行由Kubernetes管理的容器化应用程序。集群具有至少一个工作节点和至少一个主节点
+ The worker node(s) host the pods that are the components of the application. The master node(s) manages the worker nodes and the pods in the cluster.">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/makemon/kubernetes-components/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="k8s官方文档-组件(1.16版)" />
+  <meta name="twitter:description" content="Kubernetes Components(K8s组件) 原文地址 When you deploy Kubernetes, you get a cluster.
+ 部署Kubernetes时，您将获得一个集群
+ A cluster is a set of machines, called nodes, that run containerized applications managed by …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>k8s官方文档-组件(1.16版)</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 18, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;5&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;1042&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;makemon
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h1 id="kubernetes-components-k8s组件">Kubernetes Components(K8s组件)</h1>
+
+<p><a href="https://kubernetes.io/docs/concepts/overview/components/">原文地址</a>
+When you deploy Kubernetes, you get a cluster.</p>
+
+<blockquote>
+<p>部署Kubernetes时，您将获得一个集群</p>
+</blockquote>
+
+<p>A cluster is a set of machines, called nodes, that run containerized applications managed by Kubernetes. A cluster has at least one worker node and at least one master node.</p>
+
+<blockquote>
+<p>集群是一组计算机，称为节点，它们运行由Kubernetes管理的容器化应用程序。集群具有至少一个工作节点和至少一个主节点</p>
+</blockquote>
+
+<p>The worker node(s) host the pods that are the components of the application. The master node(s) manages the worker nodes and the pods in the cluster. Multiple master nodes are used to provide a cluster with failover and high availability.</p>
+
+<p>This document outlines the various components you need to have a complete and working Kubernetes cluster.</p>
+
+<p>Here’s the diagram of a Kubernetes cluster with all the components tied together.</p>
+
+<blockquote>
+<p>工作节点托管作为应用程序组件的Pod。主节点管理集群中的工作节点和Pod。多个主节点用于为群集提供故障转移和高可用性。</p>
+
+<p>本文档概述了拥有完整且有效的Kubernetes集群所需的各种组件。</p>
+
+<p>这是所有组件捆绑在一起的Kubernetes集群的示意图。</p>
+</blockquote>
+
+<p>![Components of Kubernetes](/img/makemon/components-of-kubernetes/components-of-kubernetes.png</p>
+
+<p>)</p>
+
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/overview/components/#master-components">Master Components</a>（主组件）</li>
+<li><a href="https://kubernetes.io/docs/concepts/overview/components/#node-components">Node Components</a>（节点组件）</li>
+<li><a href="https://kubernetes.io/docs/concepts/overview/components/#addons">Addons</a>（插件）</li>
+</ul>
+
+<h2 id="master-components-主组件">Master Components(主组件)</h2>
+
+<p>Master components provide the cluster’s control plane. Master components make global decisions about the cluster (for example, scheduling), and they detect and respond to cluster events (for example, starting up a new <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/">pod</a> when a deployment’s <code>replicas</code> field is unsatisfied).</p>
+
+<p>Master components can be run on any machine in the cluster. However, for simplicity, set up scripts typically start all master components on the same machine, and do not run user containers on this machine. See <a href="https://kubernetes.io/docs/admin/high-availability/">Building High-Availability Clusters</a> for an example multi-master-VM setup.</p>
+
+<blockquote>
+<p>主组件提供集群的控制平面。主组件对集群进行全局决策（例如，调度），它们检测并响应集群事件（例如，启动新的<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/">Pod</a>当部署的<code>replicas</code>领域是不满意）。</p>
+
+<p>主组件可以在群集中的任何计算机上运行。但是，为简单起见，设置脚本通常在同一台计算机上启动所有主组件，并且不在该计算机上运行用户容器。有关多主虚拟机设置示例，请参阅 <a href="https://kubernetes.io/docs/admin/high-availability/">构建高可用性群集</a>。</p>
+</blockquote>
+
+<h3 id="kube-apiserver">kube-apiserver</h3>
+
+<p>The API server is a component of the Kubernetes <a href="https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane">control plane</a> that exposes the Kubernetes API. The API server is the front end for the Kubernetes control plane.</p>
+
+<p>The main implementation of a Kubernetes API server is <a href="https://kubernetes.io/docs/reference/generated/kube-apiserver/">kube-apiserver</a>. kube-apiserver is designed to scale horizontally—that is, it scales by deploying more instances. You can run several instances of kube-apiserver and balance traffic between those instances.</p>
+
+<blockquote>
+<p>API服务器是Kubernetes <a href="https://kubernetes.io/docs/reference/glossary/?all=true#term-control-plane">控制平面</a>组件。 公开了Kubernetes API。API服务器是Kubernetes控制平面的前端。</p>
+
+<p>Kubernetes API服务器的主要实现是<a href="https://kubernetes.io/docs/reference/generated/kube-apiserver/">kube-apiserver</a>。kube-apiserver旨在水平扩展-即，它通过部署更多实例进行扩展。您可以运行kube-apiserver的多个实例，并平衡这些实例之间的流量。</p>
+</blockquote>
+
+<h3 id="etcd">etcd</h3>
+
+<p>Consistent and highly-available key value store used as Kubernetes’ backing store for all cluster data.</p>
+
+<p>If your Kubernetes cluster uses etcd as its backing store, make sure you have a <a href="https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster">back up</a> plan for those data.</p>
+
+<p>You can find in-depth information about etcd in the offical <a href="https://etcd.io/docs/">documentation</a>.</p>
+
+<blockquote>
+<p>一致且高度可用的键值存储用作所有集群数据的Kubernetes的后备存储。</p>
+
+<p>如果您的Kubernetes集群使用etcd作为其后备存储，请确保您有 针对这些数据的<a href="https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster">备份</a>计划。</p>
+
+<p>您可以在官方<a href="https://etcd.io/docs/">文档中</a>找到有关etcd的详细信息。</p>
+</blockquote>
+
+<h3 id="kube-scheduler">kube-scheduler</h3>
+
+<p>Component on the master that watches newly created pods that have no node assigned, and selects a node for them to run on.</p>
+
+<p>Factors taken into account for scheduling decisions include individual and collective resource requirements, hardware/software/policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference and deadlines.</p>
+
+<blockquote>
+<p>主组件上的组件，该组件监视未分配节点的新创建的Pod，并选择要在其上运行的节点。</p>
+
+<p>计划决策要考虑的因素包括个人和集体资源需求，硬件/软件/策略约束，亲和力和反亲和力规范，数据局部性，工作负载之间的干扰和期限。</p>
+</blockquote>
+
+<h3 id="kube-controller-manager">kube-controller-manager</h3>
+
+<p>Component on the master that runs <a href="https://kubernetes.io/docs/concepts/architecture/controller/">controllers</a>.</p>
+
+<p>Logically, each <a href="https://kubernetes.io/docs/concepts/architecture/controller/">controller</a> is a separate process, but to reduce complexity, they are all compiled into a single binary and run in a single process.</p>
+
+<p>These controllers include:</p>
+
+<ul>
+<li>Node Controller: Responsible for noticing and responding when nodes go down.</li>
+<li>Replication Controller: Responsible for maintaining the correct number of pods for every replication controller object in the system.</li>
+<li>Endpoints Controller: Populates the Endpoints object (that is, joins Services &amp; Pods).</li>
+<li>Service Account &amp; Token Controllers: Create default accounts and API access tokens for new namespaces.</li>
+</ul>
+
+<blockquote>
+<p>运行<a href="https://kubernetes.io/docs/concepts/architecture/controller/">控制器</a>的主机上的组件。</p>
+
+<p>从逻辑上讲，每个<a href="https://kubernetes.io/docs/concepts/architecture/controller/">控制器</a>是一个单独的进程，但是为了降低复杂性，它们都被编译成一个二进制文件并在单个进程中运行。</p>
+
+<p>这些控制器包括：</p>
+
+<ul>
+<li>节点控制器：负责在节点出现故障时进行通知和响应。</li>
+<li>复制控制器：负责为系统中的每个复制控制器对象维护正确数量的Pod。</li>
+<li>端点控制器：填充“端点”对象（即，加入“服务和窗格”）。</li>
+<li>服务帐户和令牌控制器：为新的名称空间创建默认帐户和API访问令牌。</li>
+</ul>
+</blockquote>
+
+<h3 id="cloud-controller-manager">cloud-controller-manager</h3>
+
+<p><a href="https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/">cloud-controller-manager</a> runs controllers that interact with the underlying cloud providers. The cloud-controller-manager binary is an alpha feature introduced in Kubernetes release 1.6.</p>
+
+<p>cloud-controller-manager runs cloud-provider-specific controller loops only. You must disable these controller loops in the kube-controller-manager. You can disable the controller loops by setting the <code>--cloud-provider</code> flag to <code>external</code> when starting the kube-controller-manager.</p>
+
+<p>cloud-controller-manager allows the cloud vendor’s code and the Kubernetes code to evolve independently of each other. In prior releases, the core Kubernetes code was dependent upon cloud-provider-specific code for functionality. In future releases, code specific to cloud vendors should be maintained by the cloud vendor themselves, and linked to cloud-controller-manager while running Kubernetes.</p>
+
+<p>The following controllers have cloud provider dependencies:</p>
+
+<ul>
+<li>Node Controller: For checking the cloud provider to determine if a node has been deleted in the cloud after it stops responding</li>
+<li>Route Controller: For setting up routes in the underlying cloud infrastructure</li>
+<li>Service Controller: For creating, updating and deleting cloud provider load balancers</li>
+<li>Volume Controller: For creating, attaching, and mounting volumes, and interacting with the cloud provider to orchestrate volumes</li>
+</ul>
+
+<blockquote>
+<p><a href="https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/">cloud-controller-manager</a>运行与底层云提供商交互的控制器。cloud-controller-manager二进制文件是Kubernetes 1.6版中引入的alpha功能。</p>
+
+<p>cloud-controller-manager仅运行特定于云提供商的控制器循环。您必须在kube-controller-manager中禁用这些控制器循环。您可以通过在启动kube-controller-manager时将<code>--cloud-provider</code>标志设置为来禁用控制器循环<code>external</code>。</p>
+
+<p>cloud-controller-manager允许云供应商的代码和Kubernetes代码彼此独立地发展。在以前的版本中，核心的Kubernetes代码依赖于特定于云提供商的代码来实现功能。在将来的版本中，云供应商专有的代码应由云供应商自己维护，并在运行Kubernetes时链接到云控制器管理器。</p>
+
+<p>以下控制器具有云提供程序依赖性：</p>
+
+<ul>
+<li>节点控制器：用于检查云提供者以确定节点停止响应后是否已在云中删除该节点</li>
+<li>路由控制器：用于在基础云基础架构中设置路由</li>
+<li>服务控制器：用于创建，更新和删除云提供商负载平衡器</li>
+<li>卷控制器：用于创建，附加和安装卷，以及与云提供商交互以编排卷</li>
+</ul>
+</blockquote>
+
+<h2 id="node-components">Node Components</h2>
+
+<p>Node components run on every node, maintaining running pods and providing the Kubernetes runtime environment.</p>
+
+<blockquote>
+<p>节点组件在每个节点上运行，维护运行中的Pod，并提供Kubernetes运行时环境。</p>
+</blockquote>
+
+<h3 id="kubelet">kubelet</h3>
+
+<p>An agent that runs on each node in the cluster. It makes sure that containers are running in a pod.</p>
+
+<p>The kubelet takes a set of PodSpecs that are provided through various mechanisms and ensures that the containers described in those PodSpecs are running and healthy. The kubelet doesn’t manage containers which were not created by Kubernetes.</p>
+
+<blockquote>
+<p>在集群中每个节点上运行的代理。确保容器在容器中运行。</p>
+
+<p>kubelet包含通过各种机制提供的一组PodSpec，并确保这些PodSpec中描述的容器运行正常。Kubelet不管理不是Kubernetes创建的容器。</p>
+</blockquote>
+
+<h3 id="kube-proxy">kube-proxy</h3>
+
+<p><a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/">kube-proxy</a> is a network proxy that runs on each node in your cluster, implementing part of the Kubernetes <a href="https://kubernetes.io/docs/concepts/services-networking/service/">Service</a> concept.</p>
+
+<p>kube-proxy maintains network rules on nodes. These network rules allow network communication to your Pods from network sessions inside or outside of your cluster.</p>
+
+<p>kube-proxy uses the operating system packet filtering layer if there is one and it’s available. Otherwise, kube-proxy forwards the traffic itself.</p>
+
+<blockquote>
+<p><a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/">kube-proxy</a>是一个网络代理，它在集群中的每个节点上运行，实现了Kubernetes <a href="https://kubernetes.io/docs/concepts/services-networking/service/">Service的</a>一部分。一种将在Pod 概念。</p>
+
+<p>kube-proxy维护节点上的网络规则。这些网络规则允许从群集内部或外部的网络会话与Pod进行网络通信。</p>
+
+<p>如果有kube-proxy可用，它将使用操作系统数据包过滤层。否则，kube-proxy会转发流量本身。</p>
+</blockquote>
+
+<h3 id="container-runtime">Container Runtime</h3>
+
+<p>The container runtime is the software that is responsible for running containers.</p>
+
+<p>Kubernetes supports several container runtimes: <a href="http://www.docker.com/">Docker</a>, <a href="https://containerd.io/">containerd</a>, <a href="https://cri-o.io/">cri-o</a>, <a href="https://github.com/kubernetes-incubator/rktlet">rktlet</a> and any implementation of the <a href="https://github.com/kubernetes/community/blob/master/contributors/devel/sig-node/container-runtime-interface.md">Kubernetes CRI (Container Runtime Interface)</a>.</p>
+
+<blockquote>
+<p>容器运行时是负责运行容器的软件。</p>
+
+<p>Kubernetes支持几种容器运行时：<a href="http://www.docker.com/">Docker</a>， <a href="https://containerd.io/">contained</a>，<a href="https://cri-o.io/">cri-o</a>， <a href="https://github.com/kubernetes-incubator/rktlet">rktlet</a>以及<a href="https://github.com/kubernetes/community/blob/master/contributors/devel/sig-node/container-runtime-interface.md">Kubernetes CRI（容器运行时接口）的</a>任何实现。</p>
+</blockquote>
+
+<h2 id="addons">Addons</h2>
+
+<p>Addons use Kubernetes resources (<a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset">DaemonSet</a>, <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">Deployment</a>, etc) to implement cluster features. Because these are providing cluster-level features, namespaced resources for addons belong within the <code>kube-system</code> namespace.</p>
+
+<p>Selected addons are described below; for an extended list of available addons, please see <a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">Addons</a>.</p>
+
+<blockquote>
+<p>插件使用Kubernetes资源（<a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset">DaemonSet</a>， <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">部署</a>等）来实现集群功能。因为它们提供了群集级功能，所以插件的命名空间资源属于<code>kube-system</code>命名空间。</p>
+
+<p>所选的插件如下所述；有关可用插件的扩展列表，请参见<a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">插件</a>。</p>
+</blockquote>
+
+<h3 id="dns">DNS</h3>
+
+<p>While the other addons are not strictly required, all Kubernetes clusters should have <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">cluster DNS</a>, as many examples rely on it.</p>
+
+<p>Cluster DNS is a DNS server, in addition to the other DNS server(s) in your environment, which serves DNS records for Kubernetes services.</p>
+
+<p>Containers started by Kubernetes automatically include this DNS server in their DNS searches.</p>
+
+<blockquote>
+<p>虽然并非严格要求其他附加组件，但是所有Kubernetes集群都应具有<a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">集群DNS</a>，因为许多示例都依赖于此。</p>
+
+<p>除了您环境中的其他DNS服务器之外，集群DNS还是一个DNS服务器，它为Kubernetes服务提供DNS记录。</p>
+
+<p>由Kubernetes启动的容器会在其DNS搜索中自动包括此DNS服务器。</p>
+</blockquote>
+
+<h3 id="web-ui-dashboard">Web UI (Dashboard)</h3>
+
+<p><a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">Dashboard</a> is a general purpose, web-based UI for Kubernetes clusters. It allows users to manage and troubleshoot applications running in the cluster, as well as the cluster itself.</p>
+
+<blockquote>
+<p><a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">仪表板</a>是Kubernetes集群的通用基于Web的UI。它允许用户管理集群中运行的应用程序以及集群本身并进行故障排除。</p>
+</blockquote>
+
+<h3 id="container-resource-monitoring">Container Resource Monitoring</h3>
+
+<p><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/">Container Resource Monitoring</a> records generic time-series metrics about containers in a central database, and provides a UI for browsing that data.</p>
+
+<blockquote>
+<p><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/">容器资源监视</a>在中央数据库中记录有关容器的一般时间序列指标，并提供用于浏览该数据的UI。</p>
+</blockquote>
+
+<h3 id="cluster-level-logging">Cluster-level Logging</h3>
+
+<p>A <a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">cluster-level logging</a> mechanism is responsible for saving container logs to a central log store with search/browsing interface.</p>
+
+<blockquote>
+<p>一个<a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">集群级别的日志记录</a>机制是负责保存容器日志到中央日志存储与搜索/浏览界面。</p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/kubernetes/">kubernetes</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fkubernetes-components%2f&amp;text=k8s%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3-%e7%bb%84%e4%bb%b6%281.16%e7%89%88%29&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fkubernetes-components%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fkubernetes-components%2f&amp;title=k8s%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3-%e7%bb%84%e4%bb%b6%281.16%e7%89%88%29" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fkubernetes-components%2f&amp;title=k8s%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3-%e7%bb%84%e4%bb%b6%281.16%e7%89%88%29" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fkubernetes-components%2f&amp;title=k8s%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3-%e7%bb%84%e4%bb%b6%281.16%e7%89%88%29" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fkubernetes-components%2f&amp;description=k8s%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3-%e7%bb%84%e4%bb%b6%281.16%e7%89%88%29" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/cxn/cpucontextswitch/" data-toggle="tooltip" data-placement="top" title="CpuContextSwitch">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/" data-toggle="tooltip" data-placement="top" title="Docker Daemon配置官方文档翻译(1)">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

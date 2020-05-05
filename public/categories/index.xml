@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on panda power!</title>
+    <link>https://cyboca.ga/categories/</link>
+    <description>Recent content in Categories on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 16:36:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>cyboca</title>
+      <link>https://cyboca.ga/categories/cyboca/</link>
+      <pubDate>Sun, 17 Nov 2019 16:36:46 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/categories/cyboca/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

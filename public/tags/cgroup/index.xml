@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cgroup on panda power!</title>
+    <link>https://cyboca.ga/tags/cgroup/</link>
+    <description>Recent content in cgroup on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 12 Nov 2019 22:50:28 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/cgroup/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Cgroup</title>
+      <link>https://cyboca.ga/post/cxn/cgroup/</link>
+      <pubDate>Tue, 12 Nov 2019 22:50:28 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/cgroup/</guid>
+      <description>CGROUP Linux CGroup全称Linux Control Group， 是Linux内核的一个功能，用来限制，控制与分离一个进程组群的资源（如CPU、内存、磁盘输入输出等）。这个项目最早是由Google的工程师在2006年发起（主要是Paul Menage和Rohit Seth），最早的名称为进程容器（process containers）。在2007年时，因为在Linux内核中，容器（container）这个名词太过广泛，为避免混乱，被重命名为cgroup，并且被合并到2.6.24版的内核中去。然后，其它开始了他的发展。
+Linux CGroupCgroup 可​​​让​​​您​​​为​​​系​​​统​​​中​​​所​​​运​​​行​​​任​​​务​​​（进​​​程​​​）的​​​用​​​户​​​定​​​义​​​组​​​群​​​分​​​配​​​资​​​源​​​ — 比​​​如​​​ CPU 时​​​间​​​、​​​系​​​统​​​内​​​存​​​、​​​网​​​络​​​带​​​宽​​​或​​​者​​​这​​​些​​​资​​​源​​​的​​​组​​​合​​​。​​​您​​​可​​​以​​​监​​​控​​​您​​​配​​​置​​​的​​​ cgroup，拒​​​绝​​​ cgroup 访​​​问​​​某​​​些​​​资​​​源​​​，甚​​​至​​​在​​​ 运​​​行​​​的​​​系​​​统​​​中​​​动​​​态​​​配​​​置​​​您​​​的​​​ cgroup。
+主要提供了如下功能：
+ Resource limitation: 限制资源使用，比如内存使用上限以及文件系统的缓存限制。 Prioritization: 优先级控制，比如：CPU利用和磁盘IO吞吐。 Accounting: 一些审计或一些统计，主要目的是为了计费。 Control: 挂起进程，恢复执行进程。  使​​​用​​​ cgroup，系​​​统​​​管​​​理​​​员​​​可​​​更​​​具​​​体​​​地​​​控​​​制​​​对​​​系​​​统​​​资​​​源​​​的​​​分​​​配​​​、​​​优​​​先​​​顺​​​序​​​、​​​拒​​​绝​​​、​​​管​​​理​​​和​​​监​​​控​​​。​​​可​​​更​​​好​​​地​​​根​​​据​​​任​​​务​​​和​​​用​​​户​​​分​​​配​​​硬​​​件​​​资​​​源​​​，提​​​高​​​总​​​体​​​效​​​率​​​。
+在实践中，系统管理员一般会利用CGroup做下面这些事（有点像为某个虚拟机分配资源似的）：
+ 隔离一个进程集合（比如：nginx的所有进程），并限制他们所消费的资源，比如绑定CPU的核。 为这组进程 分配其足够使用的内存 为这组进程分配相应的网络带宽和磁盘存储限制 限制访问某些设备（通过设置设备的白名单）  首先，Linux把CGroup这个事实现成了一个file system，你可以mount。在我的Ubuntu 14.04下，你输入以下命令你就可以看到cgroup已为你mount好了。
+chenxn@ubuntu:~$ mount -t cgroup cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,relatime,cpuset) cgroup on /sys/fs/cgroup/cpu type cgroup (rw,relatime,cpu) cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,relatime,cpuacct) cgroup on /sys/fs/cgroup/memory type cgroup (rw,relatime,memory) cgroup on /sys/fs/cgroup/devices type cgroup (rw,relatime,devices) cgroup on /sys/fs/cgroup/freezer type cgroup (rw,relatime,freezer) cgroup on /sys/fs/cgroup/blkio type cgroup (rw,relatime,blkio) cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,net_prio) cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,net_cls) cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,relatime,perf_event) cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,relatime,hugetlb) 或者使用lssubsys命令：</description>
+    </item>
+    
+  </channel>
+</rss>

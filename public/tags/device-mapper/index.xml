@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Device Mapper on panda power!</title>
+    <link>https://cyboca.ga/tags/device-mapper/</link>
+    <description>Recent content in Device Mapper on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 21:08:40 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/device-mapper/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>DeviceMapper</title>
+      <link>https://cyboca.ga/post/cxn/devicemapper/</link>
+      <pubDate>Sun, 17 Nov 2019 21:08:40 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/devicemapper/</guid>
+      <description>Docker的DeviceMapper 我们可以看一下docker的loopback设备：
+[root@node001 ~]# losetup -a /dev/loop0: [64768]:38050288 (/var/lib/docker/devicemapper/devicemapper/data) /dev/loop1: [64768]:38050289 (/var/lib/docker/devicemapper/devicemapper/metadata) 其中data 100GB，metadata 2.0GB
+[root@node001 ~]# ls -alhs /var/lib/docker/devicemapper/devicemapper 506M -rw-------. 1 root root 100G Sep 10 20:15 data 1.1M -rw-------. 1 root root 2.0G Sep 10 20:15 metadata 下面是相关的thin-pool。其中，有个当一大串hash串的device是正在启动的容器：
+[root@node001 ~]# ll /dev/mapper/dock* lrwxrwxrwx. 1 root root 7 Aug 25 07:57 /dev/mapper/docker-253:0-104108535-pool -&amp;gt; ../dm-2 lrwxrwxrwx. 1 root root 7 Aug 25 11:13 /dev/mapper/docker-253:0-104108535-deefcd630a60aa5ad3e69249f58a68e717324be4258296653406ff062f605edf -&amp;gt; ../dm-3 我们可以看一下它的device id（Docker都把它们记下来了）：</description>
+    </item>
+    
+  </channel>
+</rss>

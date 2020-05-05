@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>DCE内核参数优化含义 - panda power!</title>
+  <meta name="description" content="DCE内核参数优化含义 #开启ip6tables对bridge的数据处理 net.bridge.bridge-nf-call-ip6tables=1	#开启iptables对bridge的数据进行处理 net.bridge.bridge-nf-call-iptables=1 #开启arptables对bridge的数据进行处理 net.bridge.bridge-nf-call-arptables=1 #开启路由转发 net.ipv4.ip_forward=1 #设置防火墙最大连接跟踪数 net.netfilter.nf_conntrack_max=2097152 #nf_conntrack的tcp fin_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30 #nf_conntrack的tcp time_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_time_wait=30 #nf_conntrack的tcp close_wait记录时间15s net.netfilter.nf_conntrack_tcp_timeout_close_wait=15 #nf_conntrack的tcp established记录时间2小时 net.netfilter.nf_conntrack_tcp_timeout_established=7200 #保持在FIN-WAIT-2状态的时间为30s net.ipv4.tcp_fin_timeout=30 #开启SYN Cookies net.ipv4.tcp_syncookies=1 #表示SYN队列的长度 net.ipv4.tcp_max_syn_backlog=16384 #表示当keepalive起用的时候，TCP发送keepalive消息的频度，10分钟 net.ipv4.tcp_keepalive_time=600 #TCP发送keepalive探测以确定该连接已经断开的次数 net.ipv4.tcp_keepalive_probes=3 #探测消息发送的频率 net.ipv4.tcp_keepalive_intvl=30 #显示或设定 Linux 核心在回应 SYN 要求时会尝试多少次重新发送初始 SYN,ACK 封包后才决定放弃。 net.ipv4.tcp_synack_retries=3 #对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。 net.ipv4.tcp_syn_retries=3 #表示系统同时保持TIME_WAIT套接字的最大数量 net.ipv4.tcp_max_tw_buckets=36000 #表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_reuse=1 #表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_tw_recycle=1 #允许使用的端口 &#34;net.ipv4.ip_local_port_range=1024 65000&#34; #定义了系统中每一个端口最大的监听队列的长度 net.core.somaxconn=65535 #该参数决定了, 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=16384 #系统所能处理不属于任何进程的TCP sockets最大数量 net.ipv4.tcp_max_orphans=8192	 网络参考">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/makemon\/dce%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96%E5%90%AB%E4%B9%89\/",
+          "name": "D c e内核参数优化含义"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "makemon"
+  },
+  "headline": "DCE内核参数优化含义",
+  "description" : "DCE内核参数优化含义 #开启ip6tables对bridge的数据处理 net.bridge.bridge-nf-call-ip6tables=1\t#开启iptables对bridge的数据进行处理 net.bridge.bridge-nf-call-iptables=1 #开启arptables对bridge的数据进行处理 net.bridge.bridge-nf-call-arptables=1 #开启路由转发 net.ipv4.ip_forward=1 #设置防火墙最大连接跟踪数 net.netfilter.nf_conntrack_max=2097152 #nf_conntrack的tcp fin_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30 #nf_conntrack的tcp time_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_time_wait=30 #nf_conntrack的tcp close_wait记录时间15s net.netfilter.nf_conntrack_tcp_timeout_close_wait=15 #nf_conntrack的tcp established记录时间2小时 net.netfilter.nf_conntrack_tcp_timeout_established=7200 #保持在FIN-WAIT-2状态的时间为30s net.ipv4.tcp_fin_timeout=30 #开启SYN Cookies net.ipv4.tcp_syncookies=1 #表示SYN队列的长度 net.ipv4.tcp_max_syn_backlog=16384 #表示当keepalive起用的时候，TCP发送keepalive消息的频度，10分钟 net.ipv4.tcp_keepalive_time=600 #TCP发送keepalive探测以确定该连接已经断开的次数 net.ipv4.tcp_keepalive_probes=3 #探测消息发送的频率 net.ipv4.tcp_keepalive_intvl=30 #显示或设定 Linux 核心在回应 SYN 要求时会尝试多少次重新发送初始 SYN,ACK 封包后才决定放弃。 net.ipv4.tcp_synack_retries=3 #对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。 net.ipv4.tcp_syn_retries=3 #表示系统同时保持TIME_WAIT套接字的最大数量 net.ipv4.tcp_max_tw_buckets=36000 #表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_reuse=1 #表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_tw_recycle=1 #允许使用的端口 \x26#34;net.ipv4.ip_local_port_range=1024 65000\x26#34; #定义了系统中每一个端口最大的监听队列的长度 net.core.somaxconn=65535 #该参数决定了, 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=16384 #系统所能处理不属于任何进程的TCP sockets最大数量 net.ipv4.tcp_max_orphans=8192\t 网络参考",
+  "inLanguage" : "zh-cn",
+  "wordCount":  75 ,
+  "datePublished" : "2019-11-25T05:11:05",
+  "dateModified" : "2019-11-25T05:11:05",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "dce" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/makemon\/dce%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96%E5%90%AB%E4%B9%89\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="DCE内核参数优化含义" />
+<meta property="og:description" content="DCE内核参数优化含义 #开启ip6tables对bridge的数据处理 net.bridge.bridge-nf-call-ip6tables=1	#开启iptables对bridge的数据进行处理 net.bridge.bridge-nf-call-iptables=1 #开启arptables对bridge的数据进行处理 net.bridge.bridge-nf-call-arptables=1 #开启路由转发 net.ipv4.ip_forward=1 #设置防火墙最大连接跟踪数 net.netfilter.nf_conntrack_max=2097152 #nf_conntrack的tcp fin_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30 #nf_conntrack的tcp time_wait记录时间30s net.netfilter.nf_conntrack_tcp_timeout_time_wait=30 #nf_conntrack的tcp close_wait记录时间15s net.netfilter.nf_conntrack_tcp_timeout_close_wait=15 #nf_conntrack的tcp established记录时间2小时 net.netfilter.nf_conntrack_tcp_timeout_established=7200 #保持在FIN-WAIT-2状态的时间为30s net.ipv4.tcp_fin_timeout=30 #开启SYN Cookies net.ipv4.tcp_syncookies=1 #表示SYN队列的长度 net.ipv4.tcp_max_syn_backlog=16384 #表示当keepalive起用的时候，TCP发送keepalive消息的频度，10分钟 net.ipv4.tcp_keepalive_time=600 #TCP发送keepalive探测以确定该连接已经断开的次数 net.ipv4.tcp_keepalive_probes=3 #探测消息发送的频率 net.ipv4.tcp_keepalive_intvl=30 #显示或设定 Linux 核心在回应 SYN 要求时会尝试多少次重新发送初始 SYN,ACK 封包后才决定放弃。 net.ipv4.tcp_synack_retries=3 #对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。 net.ipv4.tcp_syn_retries=3 #表示系统同时保持TIME_WAIT套接字的最大数量 net.ipv4.tcp_max_tw_buckets=36000 #表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_reuse=1 #表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_tw_recycle=1 #允许使用的端口 &#34;net.ipv4.ip_local_port_range=1024 65000&#34; #定义了系统中每一个端口最大的监听队列的长度 net.core.somaxconn=65535 #该参数决定了, 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=16384 #系统所能处理不属于任何进程的TCP sockets最大数量 net.ipv4.tcp_max_orphans=8192	 网络参考">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/makemon/dce%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96%E5%90%AB%E4%B9%89/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="DCE内核参数优化含义" />
+  <meta name="twitter:description" content="DCE内核参数优化含义 #开启ip6tables对bridge的数据处理 net.bridge.bridge-nf-call-ip6tables=1	#开启iptables对bridge的数据进行处理 net.bridge.bridge-nf-call-iptables=1 #开启arptables对bridge …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>DCE内核参数优化含义</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 25, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;1&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;75&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;makemon
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h1 id="dce内核参数优化含义">DCE内核参数优化含义</h1>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#开启ip6tables对bridge的数据处理</span>
+net.bridge.bridge-nf-call-ip6tables<span class="o">=</span><span class="m">1</span>					
+
+<span class="c1">#开启iptables对bridge的数据进行处理</span>
+net.bridge.bridge-nf-call-iptables<span class="o">=</span><span class="m">1</span>
+
+<span class="c1">#开启arptables对bridge的数据进行处理</span>
+net.bridge.bridge-nf-call-arptables<span class="o">=</span><span class="m">1</span> 
+
+<span class="c1">#开启路由转发</span>
+net.ipv4.ip_forward<span class="o">=</span><span class="m">1</span>
+
+<span class="c1">#设置防火墙最大连接跟踪数</span>
+net.netfilter.nf_conntrack_max<span class="o">=</span><span class="m">2097152</span>
+
+<span class="c1">#nf_conntrack的tcp fin_wait记录时间30s</span>
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait<span class="o">=</span><span class="m">30</span>
+
+<span class="c1">#nf_conntrack的tcp time_wait记录时间30s</span>
+net.netfilter.nf_conntrack_tcp_timeout_time_wait<span class="o">=</span><span class="m">30</span>
+
+<span class="c1">#nf_conntrack的tcp close_wait记录时间15s</span>
+net.netfilter.nf_conntrack_tcp_timeout_close_wait<span class="o">=</span><span class="m">15</span>
+
+<span class="c1">#nf_conntrack的tcp established记录时间2小时</span>
+net.netfilter.nf_conntrack_tcp_timeout_established<span class="o">=</span><span class="m">7200</span>
+
+<span class="c1">#保持在FIN-WAIT-2状态的时间为30s</span>
+net.ipv4.tcp_fin_timeout<span class="o">=</span><span class="m">30</span> 
+
+<span class="c1">#开启SYN Cookies</span>
+net.ipv4.tcp_syncookies<span class="o">=</span><span class="m">1</span>
+
+<span class="c1">#表示SYN队列的长度</span>
+net.ipv4.tcp_max_syn_backlog<span class="o">=</span><span class="m">16384</span>
+
+<span class="c1">#表示当keepalive起用的时候，TCP发送keepalive消息的频度，10分钟</span>
+net.ipv4.tcp_keepalive_time<span class="o">=</span><span class="m">600</span> 
+
+<span class="c1">#TCP发送keepalive探测以确定该连接已经断开的次数</span>
+net.ipv4.tcp_keepalive_probes<span class="o">=</span><span class="m">3</span> 
+
+<span class="c1">#探测消息发送的频率</span>
+net.ipv4.tcp_keepalive_intvl<span class="o">=</span><span class="m">30</span> 
+
+<span class="c1">#显示或设定 Linux 核心在回应 SYN 要求时会尝试多少次重新发送初始 SYN,ACK 封包后才决定放弃。</span>
+net.ipv4.tcp_synack_retries<span class="o">=</span><span class="m">3</span> 
+
+<span class="c1">#对于一个新建连接，内核要发送多少个 SYN 连接请求才决定放弃。</span>
+net.ipv4.tcp_syn_retries<span class="o">=</span><span class="m">3</span>
+
+<span class="c1">#表示系统同时保持TIME_WAIT套接字的最大数量</span>
+net.ipv4.tcp_max_tw_buckets<span class="o">=</span><span class="m">36000</span>
+
+<span class="c1">#表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；</span>
+net.ipv4.tcp_tw_reuse<span class="o">=</span><span class="m">1</span>
+
+<span class="c1">#表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。</span>
+net.ipv4.tcp_tw_recycle<span class="o">=</span><span class="m">1</span> 
+
+<span class="c1">#允许使用的端口</span>
+<span class="s2">&#34;net.ipv4.ip_local_port_range=1024 65000&#34;</span>
+
+<span class="c1">#定义了系统中每一个端口最大的监听队列的长度</span>
+net.core.somaxconn<span class="o">=</span><span class="m">65535</span> 
+
+<span class="c1">#该参数决定了, 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目</span>
+net.core.netdev_max_backlog<span class="o">=</span><span class="m">16384</span>
+
+<span class="c1">#系统所能处理不属于任何进程的TCP sockets最大数量</span>
+net.ipv4.tcp_max_orphans<span class="o">=</span><span class="m">8192</span>					</code></pre></div>
+<p>网络参考</p>
+
+<blockquote>
+<p><a href="http://keithmo.me/post/2018/08/25/conntrack-tuning/">nf_conntrack: table full, dropping packet</a></p>
+
+<p><a href="https://www.cnblogs.com/aquester/p/9891484.html">Linux上的TIME_WAIT和tcp_fin_timeout</a></p>
+
+<p><a href="https://www.bbsmax.com/A/ZOJPRRrxdv/">centos7优化内核参数详解</a></p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/dce/">dce</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fdce%25E5%2586%2585%25E6%25A0%25B8%25E5%258F%2582%25E6%2595%25B0%25E4%25BC%2598%25E5%258C%2596%25E5%2590%25AB%25E4%25B9%2589%2f&amp;text=DCE%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e4%bc%98%e5%8c%96%e5%90%ab%e4%b9%89&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fdce%25E5%2586%2585%25E6%25A0%25B8%25E5%258F%2582%25E6%2595%25B0%25E4%25BC%2598%25E5%258C%2596%25E5%2590%25AB%25E4%25B9%2589%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fdce%25E5%2586%2585%25E6%25A0%25B8%25E5%258F%2582%25E6%2595%25B0%25E4%25BC%2598%25E5%258C%2596%25E5%2590%25AB%25E4%25B9%2589%2f&amp;title=DCE%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e4%bc%98%e5%8c%96%e5%90%ab%e4%b9%89" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fdce%25E5%2586%2585%25E6%25A0%25B8%25E5%258F%2582%25E6%2595%25B0%25E4%25BC%2598%25E5%258C%2596%25E5%2590%25AB%25E4%25B9%2589%2f&amp;title=DCE%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e4%bc%98%e5%8c%96%e5%90%ab%e4%b9%89" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fdce%25E5%2586%2585%25E6%25A0%25B8%25E5%258F%2582%25E6%2595%25B0%25E4%25BC%2598%25E5%258C%2596%25E5%2590%25AB%25E4%25B9%2589%2f&amp;title=DCE%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e4%bc%98%e5%8c%96%e5%90%ab%e4%b9%89" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2fmakemon%2fdce%25E5%2586%2585%25E6%25A0%25B8%25E5%258F%2582%25E6%2595%25B0%25E4%25BC%2598%25E5%258C%2596%25E5%2590%25AB%25E4%25B9%2589%2f&amp;description=DCE%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e4%bc%98%e5%8c%96%e5%90%ab%e4%b9%89" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/emiya/headless-service/" data-toggle="tooltip" data-placement="top" title="Headless service">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/" data-toggle="tooltip" data-placement="top" title="Docker_Daemon配置官方文档翻译(2)">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>翻译 on panda power!</title>
+    <link>https://cyboca.ga/tags/%E7%BF%BB%E8%AF%91/</link>
+    <description>Recent content in 翻译 on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 08 Dec 2019 23:02:23 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/%E7%BF%BB%E8%AF%91/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker_Daemon配置官方文档翻译3</title>
+      <link>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913/</link>
+      <pubDate>Sun, 08 Dec 2019 23:02:23 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913/</guid>
+      <description>原文地址
+Enable debugging  启动调试
+ There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.
+ 这里两种方式开启调试，有两种启用调试的方法。推荐的方法是将debug关键词设置为true在daemon.json文件中的。该方法适用于每个Docker平台。
+ 1.Edit the daemon.json file, which is usually located in /etc/docker/. You may need to create this file, if it does not yet exist. On macOS or Windows, do not edit the file directly.</description>
+    </item>
+    
+    <item>
+      <title>Docker_Daemon配置官方文档翻译(2)</title>
+      <link>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/</link>
+      <pubDate>Sun, 01 Dec 2019 20:25:15 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/</guid>
+      <description>原文地址
+Troubleshoot the daemon  找到并解决问题在守护进程上
+ You can enable debugging on the daemon to learn about the runtime activity of the daemon and to aid in troubleshooting. If the daemon is completely non-responsive, you can also force a full stack trace of all threads to be added to the daemon log by sending the SIGUSR signal to the Docker daemon.
+ 你可以开启守护进程上的排错模式，它可以让你了解到运行时的活动记录，帮助你来排错。如果守护进程完全没有响应，你也可以通过发送SIGUSR信号，强制将所有线程的完整堆栈跟踪信息添加到守护进程日志
+ (SIGUSR信号不理解)
+Troubleshoot conflicts between the daemon.</description>
+    </item>
+    
+    <item>
+      <title>Docker Daemon配置官方文档翻译(1)</title>
+      <link>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/</link>
+      <pubDate>Sun, 24 Nov 2019 14:24:00 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/</guid>
+      <description>原文地址
+Configure and troubleshoot the Docker daemon  配置和找出错误在Docker daemon上
+ (Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)
+After successfully installing and starting Docker, the dockerd daemon runs with its default configuration. This topic shows how to customize the configuration, start the daemon manually, and troubleshoot and debug the daemon if you run into issues.
+ 在成功的安装和启动docker后，docker的守护进程会以它默认的配置文件运行，这个话题会展示如何配置配置文件，手动启动守护进程，和你在遇到错误时找到并解决错误。
+ Start the daemon using operating system utilities  启动守护进程通过操作系统程序
+ On a typical installation the Docker daemon is started by a system utility, not manually by a user.</description>
+    </item>
+    
+  </channel>
+</rss>

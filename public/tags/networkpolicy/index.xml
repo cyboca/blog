@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NetworkPolicy on panda power!</title>
+    <link>https://cyboca.ga/tags/networkpolicy/</link>
+    <description>Recent content in NetworkPolicy on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 15 Dec 2019 22:40:33 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/networkpolicy/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>NetworkPolicy</title>
+      <link>https://cyboca.ga/post/emiya/networkpolicy/</link>
+      <pubDate>Sun, 15 Dec 2019 22:40:33 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/networkpolicy/</guid>
+      <description>NetWorkPolicy NetworkPloicy即网络策略（访问控制）；定义容器组(pod)与其他容器组以及endpoint进行通信；networkPolisy资源使用pod标签来选择pod，并定义规则
+networkpolicy的实现需要特定的网络组件的支持;
+1、实验环境准备 如上图所示：新建两个命令空间ns1和ns2并且为两个命名空间分别添加两个标签；创建上图中的三和deployment（过程略）用于测试网络连通性
+2、NetworkPolicy配置以及测试 如上图所示默认情况下相同命令空间下的pod和不同命名空间下的pod是可以相互访问的，如果需要做特定的访问控制需要用到networkpolicy这一资源
+2.1 deny all [root@node01 networkpolicy]# cat default-netpol.yaml apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default namespace: ns1 spec: podSelector: {} policyTypes: - Ingress ingress: [root@node01 networkpolicy]# kubectl apply -f default-netpol.yaml networkpolicy.networking.k8s.io &amp;#34;default&amp;#34; created [root@node01 networkpolicy]# 如上图所示ns1命令空间下的pod网络被隔离了
+2.2 allow all(默认) [root@node01 networkpolicy]# cat default-netpol.yaml apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: name: default namespace: ns1 spec: podSelector: {} policyTypes: - Ingress ingress: - {} [root@node01 networkpolicy]# kubectl apply -f default-netpol.</description>
+    </item>
+    
+  </channel>
+</rss>

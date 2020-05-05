@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>CpuContextSwitch - panda power!</title>
+  <meta name="description" content="Cpu context switch 查看系统上下文切换情况
+过多的上下文切换，会把cpu时间消耗在寄存器、内核栈以及虚拟内存等数据的保存和恢复上，缩短进程真正运行的时间，大大降低了系统性能
+vmstat主要用来分析系统内存使用情况，也可以用来分析cpu上下文切换和中断的次数
+[root@node001 ~]# vmstat 5 procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r b swpd free buff cache si so bi bo in cs us sy id wa st 0 0 0 7005360 91564 818900 0 0 0 0 25 33 0 0 100 0 0 我们一起来看这个结果，你可以先试着自己解读每列的含义。在这里，需要特别关注的四列内容：
+ cs（context switch）是每秒上下文切换的次数。 in（interrupt）则是每秒中断的次数。 r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数。 b（Blocked）则是处于不可中断睡眠状态的进程数。  可以看到，这个例子中的上下文切换次数 cs 是 33 次，而系统中断次数 in 则是 25 次，而就绪队列长度 r 和不可中断状态进程数 b 都是 0。">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/cxn\/cpucontextswitch\/",
+          "name": "Cpu context switch"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "cxn"
+  },
+  "headline": "CpuContextSwitch",
+  "description" : "Cpu context switch 查看系统上下文切换情况\n过多的上下文切换，会把cpu时间消耗在寄存器、内核栈以及虚拟内存等数据的保存和恢复上，缩短进程真正运行的时间，大大降低了系统性能\nvmstat主要用来分析系统内存使用情况，也可以用来分析cpu上下文切换和中断的次数\n[root@node001 ~]# vmstat 5 procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r b swpd free buff cache si so bi bo in cs us sy id wa st 0 0 0 7005360 91564 818900 0 0 0 0 25 33 0 0 100 0 0 我们一起来看这个结果，你可以先试着自己解读每列的含义。在这里，需要特别关注的四列内容：\n cs（context switch）是每秒上下文切换的次数。 in（interrupt）则是每秒中断的次数。 r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数。 b（Blocked）则是处于不可中断睡眠状态的进程数。  可以看到，这个例子中的上下文切换次数 cs 是 33 次，而系统中断次数 in 则是 25 次，而就绪队列长度 r 和不可中断状态进程数 b 都是 0。",
+  "inLanguage" : "zh-cn",
+  "wordCount":  549 ,
+  "datePublished" : "2019-11-17T21:36:07",
+  "dateModified" : "2019-11-17T21:36:07",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "linux, Performance optimization" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/cxn\/cpucontextswitch\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="CpuContextSwitch" />
+<meta property="og:description" content="Cpu context switch 查看系统上下文切换情况
+过多的上下文切换，会把cpu时间消耗在寄存器、内核栈以及虚拟内存等数据的保存和恢复上，缩短进程真正运行的时间，大大降低了系统性能
+vmstat主要用来分析系统内存使用情况，也可以用来分析cpu上下文切换和中断的次数
+[root@node001 ~]# vmstat 5 procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r b swpd free buff cache si so bi bo in cs us sy id wa st 0 0 0 7005360 91564 818900 0 0 0 0 25 33 0 0 100 0 0 我们一起来看这个结果，你可以先试着自己解读每列的含义。在这里，需要特别关注的四列内容：
+ cs（context switch）是每秒上下文切换的次数。 in（interrupt）则是每秒中断的次数。 r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数。 b（Blocked）则是处于不可中断睡眠状态的进程数。  可以看到，这个例子中的上下文切换次数 cs 是 33 次，而系统中断次数 in 则是 25 次，而就绪队列长度 r 和不可中断状态进程数 b 都是 0。">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/cxn/cpucontextswitch/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="CpuContextSwitch" />
+  <meta name="twitter:description" content="Cpu context switch 查看系统上下文切换情况
+过多的上下文切换，会把cpu时间消耗在寄存器、内核栈以及虚拟内存等数据的保存和恢复上，缩短进程真正运行的时间，大大降低了系统性能
+vmstat主要用来分析系统内存使用情况，也可以用来分析cpu上下文切换和中断的次数
+[root@node001 ~]# vmstat 5 procs -----------memory---------- …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>CpuContextSwitch</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 17, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;3&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;549&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;cxn
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h3 id="cpu-context-switch">Cpu context switch</h3>
+
+<p>查看系统上下文切换情况</p>
+
+<p>过多的上下文切换，会把cpu时间消耗在寄存器、内核栈以及虚拟内存等数据的保存和恢复上，缩短进程真正运行的时间，大大降低了系统性能</p>
+
+<p>vmstat主要用来分析系统内存使用情况，也可以用来分析cpu上下文切换和中断的次数</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# vmstat 5
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 0  0      0 7005360  91564 818900    0    0     0     0   25   33  0  0 100  0  0</pre></div>
+<p>我们一起来看这个结果，你可以先试着自己解读每列的含义。在这里，需要特别关注的四列内容：</p>
+
+<ul>
+<li>cs（context switch）是每秒上下文切换的次数。</li>
+<li>in（interrupt）则是每秒中断的次数。</li>
+<li>r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数。</li>
+<li>b（Blocked）则是处于不可中断睡眠状态的进程数。</li>
+</ul>
+
+<p>可以看到，这个例子中的上下文切换次数 cs 是 33 次，而系统中断次数 in 则是 25 次，而就绪队列长度 r 和不可中断状态进程数 b 都是 0。</p>
+
+<p>vmstat 只给出了系统总体的上下文切换情况，要想查看每个进程的详细情况，就需要使用我们前面提到过的 pidstat 了。给它加上 -w 选项，你就可以查看每个进程上下文切换的情况了。</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# pidstat -w 5
+Linux 4.15.0 (ubuntu)  09/23/18  _x86_64_  (2 CPU)
+
+08:18:26      UID       PID   cswch/s nvcswch/s  Command
+08:18:31        0         1      0.20      0.00  systemd
+08:18:31        0         8      5.40      0.00  rcu_sched</pre></div>
+<p>这个结果中有两列内容是我们的重点关注对象。一个是 cswch ，表示每秒自愿上下文切换（voluntary context switches）的次数，另一个则是 nvcswch ，表示每秒非自愿上下文切换（non voluntary context switches）的次数。</p>
+
+<ul>
+<li>所谓自愿上下文切换，是指进程无法获取所需资源，导致的上下文切换。比如说， I/O、内存等系统资源不足时，就会发生自愿上下文切换。</li>
+<li>而非自愿上下文切换，则是指进程由于时间片已到等原因，被系统强制调度，进而发生的上下文切换。比如说，大量进程都在争抢 CPU 时，就容易发生非自愿上下文切换。</li>
+</ul>
+
+<h4 id="一-基础准备">一、基础准备</h4>
+
+<p>先用 vmstat 看一下空闲系统的上下文切换次数：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# vmstat 1 1
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 0  0      0 6984064  92668 830896    0    0     2    19   19   35  1  0 99  0  0</pre></div>
+<p>这里你可以看到，现在的上下文切换次数 cs 是 35，而中断次数 in 是 19，r 和 b 都是 0。因为这会儿我并没有运行其他任务，所以它们就是空闲系统的上下文切换次数。</p>
+
+<h4 id="二-简单分析以及操作">二、简单分析以及操作</h4>
+
+<p>在第一个终端里运行 sysbench ，模拟系统多线程调度的瓶颈：</p>
+<div class="highlight"><pre class="chroma"># 以10个线程运行5分钟的基准测试，模拟多线程切换的问题
+[root@node001 ~]# sysbench --threads=10 --max-time=300 threads run</pre></div>
+<p>接着，在第二个终端运行 vmstat ，观察上下文切换情况：</p>
+<div class="highlight"><pre class="chroma">[root@node001 ~]# vmstat 1
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 6  0      0 6487428 118240 1292772    0    0     0     0 9019 1398830 16 84  0  0  0
+ 8  0      0 6487428 118240 1292772    0    0     0     0 10191 1392312 16 84  0  0  0</pre></div>
+<p>你应该可以发现，cs 列的上下文切换次数从之前的 35 骤然上升到了 139 万。同时，注意观察其他几个指标：</p>
+
+<ul>
+<li>r 列：就绪队列的长度已经到了 8，远远超过了系统 CPU 的个数 2，所以肯定会有大量的 CPU 竞争。</li>
+<li>us（user）和 sy（system）列：这两列的 CPU 使用率加起来上升到了 100%，其中系统 CPU 使用率，也就是 sy 列高达 84%，说明 CPU 主要是被内核占用了。</li>
+<li>in 列：中断次数也上升到了 1 万左右，说明中断处理也是个潜在的问题。</li>
+</ul>
+
+<p>综合这几个指标，我们可以知道，系统的就绪队列过长，也就是正在运行和等待 CPU 的进程数过多，导致了大量的上下文切换，而上下文切换又导致了系统 CPU 的占用率升高。</p>
+
+<p>我们继续分析，在第三个终端再用 pidstat 来看一下， CPU 和进程上下文切换的情况：</p>
+<div class="highlight"><pre class="chroma"># -w参数表示输出进程切换指标，而-u参数则表示输出CPU使用指标
+[root@node001 ~]# pidstat -w -u 1
+08:06:33      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+08:06:34        0     10488   30.00  100.00    0.00    0.00  100.00     0  sysbench
+08:06:34        0     26326    0.00    1.00    0.00    0.00    1.00     0  kworker/u4:2
+
+08:06:33      UID       PID   cswch/s nvcswch/s  Command
+08:06:34        0         8     11.00      0.00  rcu_sched
+08:06:34        0        16      1.00      0.00  ksoftirqd/1
+08:06:34        0       471      1.00      0.00  hv_balloon
+08:06:34        0      1230      1.00      0.00  iscsid
+08:06:34        0      4089      1.00      0.00  kworker/1:5
+08:06:34        0      4333      1.00      0.00  kworker/0:3
+08:06:34        0     10499      1.00    224.00  pidstat
+08:06:34        0     26326    236.00      0.00  kworker/u4:2
+08:06:34     1000     26784    223.00      0.00  sshd</pre></div>
+<p>从 pidstat 的输出你可以发现，CPU 使用率的升高果然是 sysbench 导致的，它的 CPU 使用率已经达到了 100%。但上下文切换则是来自其他进程，包括非自愿上下文切换频率最高的 pidstat ，以及自愿上下文切换频率最高的内核线程 kworker 和 sshd。</p>
+
+<p>pidstat 输出的上下文切换次数，加起来也就几百，比 vmstat 的 139 万明显小了太多。</p>
+
+<p>通过运行 man pidstat ，你会发现，pidstat 默认显示进程的指标数据，加上 -t 参数后，才会输出线程的指标。</p>
+
+<p>所以，我们可以在第三个终端里， Ctrl+C 停止刚才的 pidstat 命令，再加上 -t 参数，重试一下看看：</p>
+<div class="highlight"><pre class="chroma"># -wt 参数表示输出线程的上下文切换指标
+[root@node001 ~]# pidstat -wt 1
+08:14:05      UID      TGID       TID   cswch/s nvcswch/s  Command
+...
+08:14:05        0     10551         -      6.00      0.00  sysbench
+08:14:05        0         -     10551      6.00      0.00  |__sysbench
+08:14:05        0         -     10552  18911.00 103740.00  |__sysbench
+08:14:05        0         -     10553  18915.00 100955.00  |__sysbench
+08:14:05        0         -     10554  18827.00 103954.00  |__sysbench
+...</pre></div>
+<p>现在你就能看到了，虽然 sysbench 进程（也就是主线程）的上下文切换次数看起来并不多，但它的子线程的上下文切换次数却有很多。看来，上下文切换罪魁祸首，还是过多的 sysbench 线程。</p>
+
+<p>前面在观察系统指标时，除了上下文切换频率骤然升高，还有一个指标也有很大的变化。是的，正是中断次数。中断次数也上升到了 1 万 ，但到底是什么类型的中断上升了。</p>
+
+<p>从 /proc/interrupts 这个只读文件中读取。/proc 实际上是 Linux 的一个虚拟文件系统，用于内核空间与用户空间之间的通信。/proc/interrupts 就是这种通信机制的一部分，提供了一个只读的中断使用情况。</p>
+
+<p>我们还是在第三个终端里， Ctrl+C 停止刚才的 pidstat 命令，然后运行下面的命令，观察中断的变化情况：</p>
+<div class="highlight"><pre class="chroma"># -d 参数表示高亮显示变化的区域
+[root@node001 ~]# watch -d cat /proc/interrupts
+           CPU0       CPU1
+...
+RES:    2450431    5279697   Rescheduling interrupts
+...</pre></div>
+<p>观察一段时间，你可以发现，变化速度最快的是重调度中断（RES），这个中断类型表示，唤醒空闲状态的 CPU 来调度新的任务运行。这是多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）。</p>
+
+<p>所以，这里的中断升高还是因为过多任务的调度问题</p>
+
+<h4 id="三-每秒上下文切换多少次才算正常呢">三、每秒上下文切换多少次才算正常呢？</h4>
+
+<p>这个数值其实取决于系统本身的 CPU 性能。在我看来，如果系统的上下文切换次数比较稳定，那么从数百到一万以内，都应该算是正常的。但当上下文切换次数超过一万次，或者切换次数出现数量级的增长时，就很可能已经出现了性能问题。</p>
+
+<p>这时，你还需要根据上下文切换的类型，再做具体分析。比方说：</p>
+
+<ul>
+<li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题；</li>
+<li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈；</li>
+<li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
+</ul>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/linux/">linux</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/performance-optimization/">Performance optimization</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fcpucontextswitch%2f&amp;text=CpuContextSwitch&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fcpucontextswitch%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fcpucontextswitch%2f&amp;title=CpuContextSwitch" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fcpucontextswitch%2f&amp;title=CpuContextSwitch" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fcpucontextswitch%2f&amp;title=CpuContextSwitch" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2fcxn%2fcpucontextswitch%2f&amp;description=CpuContextSwitch" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/cxn/devicemapper/">DeviceMapper</a></li>
+                
+                    <li><a href="/post/cxn/thinprovisioningsnapshot/">Thin Provisioning</a></li>
+                
+                    <li><a href="/post/cyboca/nfs%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/">NFS</a></li>
+                
+                    <li><a href="/post/syn/dns1/">DNS&amp;BIND(1)</a></li>
+                
+                    <li><a href="/post/cxn/cgroup/">Cgroup</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/cxn/devicemapper/" data-toggle="tooltip" data-placement="top" title="DeviceMapper">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/makemon/kubernetes-components/" data-toggle="tooltip" data-placement="top" title="k8s官方文档-组件(1.16版)">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

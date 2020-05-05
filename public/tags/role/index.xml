@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Role on panda power!</title>
+    <link>https://cyboca.ga/tags/role/</link>
+    <description>Recent content in Role on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 10 Nov 2019 22:53:48 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/role/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kubernetes Rbac</title>
+      <link>https://cyboca.ga/post/emiya/kubernetes-rbac/</link>
+      <pubDate>Sun, 10 Nov 2019 22:53:48 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/emiya/kubernetes-rbac/</guid>
+      <description>Kubernetes使用RBAC授权 [TOC]
+示例环境：
+   节点名 备注     node01 主控节点   node02 容器节点    1、创建key和证书 或者从etcd中拷贝证书
+openssl genrsa -out emiya.key 2048 openssl req -new -key emiya.key -out emiya.csr -subj &amp;#34;/CN=emiya&amp;#34; openssl x509 -req -in emiya.csr -CA etcd/ca.pem -CAkey etcd/ca-key.pem -CAcreateserial -out emiya.crt 2、set-cluster apiserver端口因集群而异，不一定是16443
+kubectl config set-cluster emiya --certificate-authority=/etc/kubernetes/cert/ca.pem --embed-certs=true --server=https://192.168.10.20:16443 --kubeconfig=/etc/kubernetes/config 部分选项说明：
+ &amp;ndash;client-key=&amp;ldquo;&amp;rdquo;: TLS使用的客户端密钥路径。 &amp;ndash;cluster=&amp;ldquo;&amp;rdquo;: 指定使用的kubeconfig配置文件中的集群名。 &amp;ndash;context=&amp;ldquo;&amp;rdquo;: 指定使用的kubeconfig配置文件中的环境名。 &amp;ndash;server=&amp;ldquo;&amp;rdquo;: Kubernetes API Server的地址和端口号 &amp;ndash;certificate-authority=&amp;ldquo;&amp;rdquo;: 用以进行认证授权的.</description>
+    </item>
+    
+  </channel>
+</rss>

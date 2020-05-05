@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Docker_Daemon配置官方文档翻译3 - panda power!</title>
+  <meta name="description" content="原文地址
+Enable debugging  启动调试
+ There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.
+ 这里两种方式开启调试，有两种启用调试的方法。推荐的方法是将debug关键词设置为true在daemon.json文件中的。该方法适用于每个Docker平台。
+ 1.Edit the daemon.json file, which is usually located in /etc/docker/. You may need to create this file, if it does not yet exist. On macOS or Windows, do not edit the file directly.">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/frank\/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913\/",
+          "name": "Docker daemon配置官方文档翻译3"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Frank"
+  },
+  "headline": "Docker_Daemon配置官方文档翻译3",
+  "description" : "原文地址\nEnable debugging  启动调试\n There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.\n 这里两种方式开启调试，有两种启用调试的方法。推荐的方法是将debug关键词设置为true在daemon.json文件中的。该方法适用于每个Docker平台。\n 1.Edit the daemon.json file, which is usually located in \/etc\/docker\/. You may need to create this file, if it does not yet exist. On macOS or Windows, do not edit the file directly.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  674 ,
+  "datePublished" : "2019-12-08T23:02:23",
+  "dateModified" : "2019-12-08T23:02:23",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "Docker, Daemon, 翻译" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/frank\/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Docker_Daemon配置官方文档翻译3" />
+<meta property="og:description" content="原文地址
+Enable debugging  启动调试
+ There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.
+ 这里两种方式开启调试，有两种启用调试的方法。推荐的方法是将debug关键词设置为true在daemon.json文件中的。该方法适用于每个Docker平台。
+ 1.Edit the daemon.json file, which is usually located in /etc/docker/. You may need to create this file, if it does not yet exist. On macOS or Windows, do not edit the file directly.">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="Docker_Daemon配置官方文档翻译3" />
+  <meta name="twitter:description" content="原文地址
+Enable debugging  启动调试
+ There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.
+ 这里两 …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Docker_Daemon配置官方文档翻译3</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 December 8, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;4&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;674&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Frank
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<p><a href="https://docs.docker.com/config/daemon/">原文地址</a></p>
+
+<h2 id="enable-debugging">Enable debugging</h2>
+
+<blockquote>
+<p>启动调试</p>
+</blockquote>
+
+<p>There are two ways to enable debugging. The recommended approach is to set the debug key to true in the daemon.json file. This method works for every Docker platform.</p>
+
+<blockquote>
+<p>这里两种方式开启调试，有两种启用调试的方法。推荐的方法是将debug关键词设置为true在daemon.json文件中的。该方法适用于每个Docker平台。</p>
+</blockquote>
+
+<p>1.Edit the daemon.json file, which is usually located in /etc/docker/. You may need to create this file, if it does not yet exist. On macOS or Windows, do not edit the file directly. Instead, go to Preferences / Daemon / Advanced.</p>
+
+<blockquote>
+<p>编辑daemon.json文件，这个文件经常在 /etc/docker/中，有或许需要创建这个文件，如果他不存在，在macos或windos中，不要直接编辑这文件，而是去Preferences / Daemon / Advanced</p>
+</blockquote>
+
+<p>2.If the file is empty, add the following:</p>
+
+<blockquote>
+<p>如果文件是空的添加如下：</p>
+</blockquote>
+
+<p>{
+  &ldquo;debug&rdquo;: true
+}</p>
+
+<p>If the file already contains JSON, just add the key &ldquo;debug&rdquo;: true, being careful to add a comma to the end of the line if it is not the last line before the closing bracket. Also verify that if the log-level key is set, it is set to either info or debug. info is the default, and possible values are debug, info, warn, error, fatal.</p>
+
+<p>如果文件已有JSON文件，就只需要添加关键词“debug”:tru ,如果不是结束括号之前的最后一行，请注意添加。还需要验证log-level关键词有没有被设置，看是不是设置为info 或 debug，info是默认的，他可能的值是 debug, info, warn, error, fatal。</p>
+
+<p>3.Send a HUP signal to the daemon to cause it to reload its configuration. On Linux hosts, use the following command.</p>
+
+<blockquote>
+<p>发送HUP信号给守护进程，让它重新加载配置信息，在linux主机上使用下列命令。</p>
+
+<p>$ sudo kill -SIGHUP $(pidof dockerd)</p>
+</blockquote>
+
+<p>On Windows hosts, restart Docker.</p>
+
+<blockquote>
+<p>在windows上重启docker</p>
+</blockquote>
+
+<p>Instead of following this procedure, you can also stop the Docker daemon and restart it manually with the debug flag -D. However, this may result in Docker restarting with a different environment than the one the hosts’ startup scripts create, and this may make debugging more difficult.</p>
+
+<blockquote>
+<p>想替换这套流程的话，你还可以停止Docker的守护进程和重启他手动的使用命令 —D。然而这或许导致Docker重启在一不同的环境中比使用启动脚本创建进行拍错要难。</p>
+</blockquote>
+
+<h2 id="force-a-stack-trace-to-be-logged">Force a stack trace to be logged</h2>
+
+<blockquote>
+<p>强制记录堆栈跟踪</p>
+</blockquote>
+
+<p>If the daemon is unresponsive, you can force a full stack trace to be logged by sending a SIGUSR1 signal to the daemon.</p>
+
+<blockquote>
+<p>如果守护进程没有响应，你可以强制开启记录堆栈跟踪使用发送SIGUSR1信号给守护进程</p>
+</blockquote>
+
+<p>· Linux:</p>
+
+<p>$ sudo kill -SIGUSR1 $(pidof dockerd)</p>
+
+<p>· Windows Server:</p>
+
+<p>Download docker-signal.</p>
+
+<blockquote>
+<p>下载 docker-signal.</p>
+</blockquote>
+
+<p>Get the process ID of dockerd Get-Process dockerd.</p>
+
+<blockquote>
+<p>获取Dockerd进程ID  Get-Process dockerd.</p>
+</blockquote>
+
+<p>Run the executable with the flag &ndash;pid=<PID of daemon>.</p>
+
+<blockquote>
+<p>运行带有标志的可执行文件 &ndash;pid=<PID of daemon>。</p>
+</blockquote>
+
+<p>This forces a stack trace to be logged but does not stop the daemon. Daemon logs show the stack trace or the path to a file containing the stack trace if it was logged to a file.</p>
+
+<blockquote>
+<p>这强制记录堆栈追踪，但不会停止守护进程。守护进程的日志，会显示堆栈跟踪或包含堆栈跟踪的文件的路径如果已经将其记录到文件中</p>
+</blockquote>
+
+<p>The daemon continues operating after handling the SIGUSR1 signal and dumping the stack traces to the log. The stack traces can be used to determine the state of all goroutines and threads within the daemon.</p>
+
+<blockquote>
+<p>在处理SIGUSR1信号并将堆栈跟踪信息转储到日志之后，守护程序将继续运行。堆栈跟踪可用于确定守护程序中所有goroutine和线程的状态。</p>
+</blockquote>
+
+<h2 id="view-stack-traces">View stack traces</h2>
+
+<blockquote>
+<p>查看强制堆栈</p>
+</blockquote>
+
+<p>The Docker daemon log can be viewed by using one of the following methods:</p>
+
+<p>Docker守护进程日志可以使用下列命令查看</p>
+
+<ul>
+<li>By running journalctl -u docker.service on Linux systems using systemctl</li>
+</ul>
+
+<blockquote>
+<p>通过使用journalctl -u docker.service在linux系统上使用systemctl</p>
+</blockquote>
+
+<ul>
+<li>/var/log/messages, /var/log/daemon.log, or /var/log/docker.log on older Linux systems</li>
+</ul>
+
+<blockquote>
+<p>/var/log/messages，/var/log/daemon.log或/var/log/docker.log旧版Linux系统上</p>
+</blockquote>
+
+<ul>
+<li>By running Get-EventLog -LogName Application -Source Docker -After (Get-Date).AddMinutes(-5) | Sort-Object Time | Export-CSV ~/last5minutes.CSV on Docker Engine - Enterprise for Windows Server</li>
+</ul>
+
+<blockquote>
+<p>通过Get-EventLog -LogName Application -Source Docker -After (Get-Date).AddMinutes(-5) | Sort-Object Time | Export-CSV ~/last5minutes.CSV在Docker引擎上运行-Windows Server Enterprise</p>
+</blockquote>
+
+<h2 id="note-it-is-not-possible-to-manually-generate-a-stack-trace-on-docker-desktop-for-mac-or-docker-desktop-for-windows-however-you-can-click-the-docker-taskbar-icon-and-choose-diagnose-and-feedback-to-send-information-to-docker-if-you-run-into-issues">Note: It is not possible to manually generate a stack trace on Docker Desktop for Mac or Docker Desktop for Windows. However, you can click the Docker taskbar icon and choose Diagnose and feedback to send information to Docker if you run into issues.</h2>
+
+<blockquote>
+<p>他不能手动的生成堆栈跟踪在Windows的Docker桌面上，然而你可以点击Docker任务栏图标，然后选择‘诊断和反馈’，以在遇到问题时将信息发送给Docker。</p>
+</blockquote>
+
+<p>Look in the Docker logs for a message like the following:</p>
+
+<blockquote>
+<p>在Docker日志中查找如下消息：</p>
+
+<p>&hellip;goroutine stacks written to /var/run/docker/goroutine-stacks-2017-06-02T193336z.log
+&hellip;daemon datastructure dump written to /var/run/docker/daemon-data-2017-06-02T193336z.log</p>
+</blockquote>
+
+<p>The locations where Docker saves these stack traces and dumps depends on your operating system and configuration. You can sometimes get useful diagnostic information straight from the stack traces and dumps. Otherwise, you can provide this information to Docker for help diagnosing the problem.</p>
+
+<blockquote>
+<p>Docker保存这些堆栈跟踪和转储的位置取决于您的操作系统和配置。有时您可以直接从堆栈跟踪和转储中获得有用的诊断信息。否则，您可以将此信息提供给Docker，以帮助诊断问题。</p>
+</blockquote>
+
+<h2 id="check-whether-docker-is-running">Check whether Docker is running</h2>
+
+<p>The operating-system independent way to check whether Docker is running is to ask Docker, using the docker info command.</p>
+
+<blockquote>
+<p>操作系统独立的方法检查Docker是否运行，使用docker info 命令</p>
+</blockquote>
+
+<p>You can also use operating system utilities, such as sudo systemctl is-active docker or sudo status docker or sudo service docker status, or checking the service status using Windows utilities.</p>
+
+<blockquote>
+<p>你也可以操作系统共用程序，如sudo systemctl is-active docker 或 sudo status docker 或 sudo service docker status 或检查服务状态使用Windows程序</p>
+</blockquote>
+
+<p>Finally, you can check in the process list for the dockerd process, using commands like ps or top.</p>
+
+<blockquote>
+<p>最后，您可以dockerd使用ps或之类的命令在流程的流程列表中检入top。</p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/docker/">Docker</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/daemon/">Daemon</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/%E7%BF%BB%E8%AF%91/">翻译</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25913%2f&amp;text=Docker_Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%913&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25913%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25913%2f&amp;title=Docker_Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%913" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25913%2f&amp;title=Docker_Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%913" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25913%2f&amp;title=Docker_Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%913" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25913%2f&amp;description=Docker_Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%913" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/">Docker_Daemon配置官方文档翻译(2)</a></li>
+                
+                    <li><a href="/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/">Docker Daemon配置官方文档翻译(1)</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/" data-toggle="tooltip" data-placement="top" title="Docker_Daemon配置官方文档翻译(2)">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/emiya/networkpolicy/" data-toggle="tooltip" data-placement="top" title="NetworkPolicy">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

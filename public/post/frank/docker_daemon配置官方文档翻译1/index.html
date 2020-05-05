@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Docker Daemon配置官方文档翻译(1) - panda power!</title>
+  <meta name="description" content="原文地址
+Configure and troubleshoot the Docker daemon  配置和找出错误在Docker daemon上
+ (Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)
+After successfully installing and starting Docker, the dockerd daemon runs with its default configuration. This topic shows how to customize the configuration, start the daemon manually, and troubleshoot and debug the daemon if you run into issues.
+ 在成功的安装和启动docker后，docker的守护进程会以它默认的配置文件运行，这个话题会展示如何配置配置文件，手动启动守护进程，和你在遇到错误时找到并解决错误。
+ Start the daemon using operating system utilities  启动守护进程通过操作系统程序
+ On a typical installation the Docker daemon is started by a system utility, not manually by a user.">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/frank\/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911\/",
+          "name": "Docker daemon配置官方文档翻译(1)"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Frank"
+  },
+  "headline": "Docker Daemon配置官方文档翻译(1)",
+  "description" : "原文地址\nConfigure and troubleshoot the Docker daemon  配置和找出错误在Docker daemon上\n (Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)\nAfter successfully installing and starting Docker, the dockerd daemon runs with its default configuration. This topic shows how to customize the configuration, start the daemon manually, and troubleshoot and debug the daemon if you run into issues.\n 在成功的安装和启动docker后，docker的守护进程会以它默认的配置文件运行，这个话题会展示如何配置配置文件，手动启动守护进程，和你在遇到错误时找到并解决错误。\n Start the daemon using operating system utilities  启动守护进程通过操作系统程序\n On a typical installation the Docker daemon is started by a system utility, not manually by a user.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  599 ,
+  "datePublished" : "2019-11-24T14:24:00",
+  "dateModified" : "2019-11-24T14:24:00",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "Docker, Daemon, 翻译" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/frank\/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Docker Daemon配置官方文档翻译(1)" />
+<meta property="og:description" content="原文地址
+Configure and troubleshoot the Docker daemon  配置和找出错误在Docker daemon上
+ (Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)
+After successfully installing and starting Docker, the dockerd daemon runs with its default configuration. This topic shows how to customize the configuration, start the daemon manually, and troubleshoot and debug the daemon if you run into issues.
+ 在成功的安装和启动docker后，docker的守护进程会以它默认的配置文件运行，这个话题会展示如何配置配置文件，手动启动守护进程，和你在遇到错误时找到并解决错误。
+ Start the daemon using operating system utilities  启动守护进程通过操作系统程序
+ On a typical installation the Docker daemon is started by a system utility, not manually by a user.">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%911/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="Docker Daemon配置官方文档翻译(1)" />
+  <meta name="twitter:description" content="原文地址
+Configure and troubleshoot the Docker daemon  配置和找出错误在Docker daemon上
+ (Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)
+After successfully installing and starting Docker, the …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Docker Daemon配置官方文档翻译(1)</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 24, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;3&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;599&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Frank
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<p><a href="https://docs.docker.com/config/daemon/">原文地址</a></p>
+
+<h2 id="configure-and-troubleshoot-the-docker-daemon">Configure and troubleshoot the Docker daemon</h2>
+
+<blockquote>
+<p>配置和找出错误在Docker daemon上</p>
+</blockquote>
+
+<p>(Daemon程序，又称为守护进程，通常在系统后台长时间运行，由于没有控制终端而无法与前台交互，Daemon程序一般作为系统服务使用。)</p>
+
+<p>After successfully installing and starting Docker, the dockerd daemon runs with its default configuration. This topic shows how to customize the configuration, start the daemon manually, and troubleshoot and debug the daemon if you run into issues.</p>
+
+<blockquote>
+<p>在成功的安装和启动docker后，docker的守护进程会以它默认的配置文件运行，这个话题会展示如何配置配置文件，手动启动守护进程，和你在遇到错误时找到并解决错误。</p>
+</blockquote>
+
+<h2 id="start-the-daemon-using-operating-system-utilities">Start the daemon using operating system utilities</h2>
+
+<blockquote>
+<p>启动守护进程通过操作系统程序</p>
+</blockquote>
+
+<p>On a typical installation the Docker daemon is started by a system utility, not manually by a user. This makes it easier to automatically start Docker when the machine reboots.</p>
+
+<blockquote>
+<p>在典型安装中，Docker守护程序由系统程序启动，而不是通过用户手动启动。这使它将会更简单的重启docker当机器重启。</p>
+</blockquote>
+
+<p>The command to start Docker depends on your operating system. Check the correct page under Install Docker. To configure Docker to start automatically at system boot, see Configure Docker to start on boot.</p>
+
+<blockquote>
+<p>启动docker的命令取决于你的操作系统，检查当前页面在安装docker后，去配置docker让它自动的启动在系统启动，看如何配置dokcer在启动的时候。</p>
+</blockquote>
+
+<h2 id="start-the-daemon-manually">Start the daemon manually</h2>
+
+<blockquote>
+<p>手动启动daemon</p>
+</blockquote>
+
+<p>If you don’t want to use a system utility to manage the Docker daemon, or just want to test things out, you can manually run it using the dockerd command. You may need to use sudo, depending on your operating system configuration.</p>
+
+<blockquote>
+<p>如果你不想手动的管理Docker的守护进程，或只想测试出一些事，你可以手动的运行它使用“dockerd”命令，你或许需要&rdquo;sudo&rdquo;，取决你操作系统配置。</p>
+</blockquote>
+
+<p>When you start Docker this way, it runs in the foreground and sends its logs directly to your terminal.</p>
+
+<blockquote>
+<p>当你想通过这种方式启动Docker时，他运行在前台并将它的日志直接发送到你的中端</p>
+
+<p>$ dockerd</p>
+
+<p>INFO[0000] +job init_networkdriver()</p>
+
+<p>INFO[0000] +job serveapi(unix:///var/run/docker.sock)</p>
+
+<p>INFO[0000] Listening for HTTP on unix (/var/run/docker.sock)</p>
+</blockquote>
+
+<p>To stop Docker when you have started it manually, issue a Ctrl+C in your terminal.</p>
+
+<blockquote>
+<p>如果要停止Docker在你手动启动它后，发出一个 Ctrl+c 指令给终端</p>
+</blockquote>
+
+<h2 id="configure-the-docker-daemon">Configure the Docker daemon</h2>
+
+<blockquote>
+<p>配置Docker守护进程</p>
+</blockquote>
+
+<p>There are two ways to configure the Docker daemon:</p>
+
+<ul>
+<li>Use a JSON configuration file. This is the preferred option, since it keeps all configurations in a single place.</li>
+</ul>
+
+<blockquote>
+<p>使用一个JSON配置文件，这是一个更好的选项，因为他保留所有配置文件在一个地方</p>
+</blockquote>
+
+<ul>
+<li>Use flags when starting dockerd.</li>
+</ul>
+
+<blockquote>
+<p>使用标志命令当使用&rdquo;dockerd&rdquo;启动时</p>
+</blockquote>
+
+<p>You can use both of these options together as long as you don’t specify the same option both as a flag and in the JSON file. If that happens, the Docker daemon won’t start and prints an error message.</p>
+
+<blockquote>
+<p>如果你没有在命令选项和JSON文件中指定相同的配置，那么你可以两个同时使用命令选项和JSON文件。如果那样Docker守护进程也不会输出错误信息</p>
+</blockquote>
+
+<p>To configure the Docker daemon using a JSON file, create a file at &ldquo;/etc/docker/daemon.json&rdquo; on Linux systems, or &ldquo;C:\ProgramData\docker\config\daemon.json&rdquo; on Windows. On MacOS go to the whale in the taskbar &gt; Preferences &gt; Daemon &gt; Advanced.</p>
+
+<blockquote>
+<p>如果使用JSON文件配置Docker守护进程，创建一个文件在&rdquo;/etc/docker/daemon.json&rdquo;在Linu系统上，或者创建&rdquo;C:\ProgramData\docker\config\daemon.json&rdquo;使用与Windows系统，在MAcOS去鲸应用在taskbar &gt; Preferences &gt; Daemon &gt; Advanced。</p>
+</blockquote>
+
+<p>Here’s what the configuration file looks like:</p>
+
+<blockquote>
+<p>这是配置文件应该像的样子</p>
+</blockquote>
+
+<p>{</p>
+
+<p>&ldquo;debug&rdquo;: true,</p>
+
+<p>&ldquo;tls&rdquo;: true,</p>
+
+<p>&ldquo;tlscert&rdquo;: &ldquo;/var/docker/server.pem&rdquo;,</p>
+
+<p>&ldquo;tlskey&rdquo;: &ldquo;/var/docker/serverkey.pem&rdquo;,</p>
+
+<p>&ldquo;hosts&rdquo;: [&ldquo;tcp://192.168.59.3:2376&rdquo;]</p>
+
+<p>}</p>
+
+<p>With this configuration the Docker daemon runs in debug mode, uses TLS, and listens for traffic routed to 192.168.59.3 on port 2376. You can learn what configuration options are available in the dockerd reference docs</p>
+
+<blockquote>
+<p>在使用这个配置文件docker守护进程将会运行在纠错模式中，使用TLS,监听路由到192.168.59.3中2376端口，你可以在dockerd参考文档中了解可用的配置选项</p>
+</blockquote>
+
+<p>You can also start the Docker daemon manually and configure it using flags. This can be useful for troubleshooting problems.</p>
+
+<blockquote>
+<p>你也可以手动的启动docker守护进程和配置它通过命令，这是对于找到并解决问题很有用</p>
+</blockquote>
+
+<p>Here’s an example of how to manually start the Docker daemon, using the same configurations as above:</p>
+
+<blockquote>
+<p>这是一个例子如何手动启动Docker镜像，使用和上面一样的配置信息</p>
+
+<p>dockerd &ndash;debug /</p>
+
+<p>&ndash;tls=true /</p>
+
+<p>&ndash;tlscert=/var/docker/server.pem /</p>
+
+<p>&ndash;tlskey=/var/docker/serverkey.pem /</p>
+
+<p>&ndash;host tcp://192.168.59.3:2376</p>
+</blockquote>
+
+<p>You can learn what configuration options are available in the dockerd reference docs, or by running:</p>
+
+<blockquote>
+<p>你可以在dockerd参考文档中或通过运行以下命令了解可用的配置选项 ：</p>
+
+<p>dockerd &ndash;help</p>
+</blockquote>
+
+<p>Many specific configuration options are discussed throughout the Docker documentation. Some places to go next include:</p>
+
+<blockquote>
+<p>许多特殊的配置选项被详细描述通过Docker配置文档，一些地方还需要去了解包括：</p>
+</blockquote>
+
+<ul>
+<li><p><a href="https://docs.docker.com/engine/admin/host_integration/">自动启动容器</a></p></li>
+
+<li><p><a href="https://docs.docker.com/engine/admin/resource_constraints/">限制容器的资源</a></p></li>
+
+<li><p><a href="https://docs.docker.com/engine/userguide/storagedriver/">配置存储驱动程序</a></p></li>
+
+<li><p><a href="https://docs.docker.com/engine/security/">集装箱安全</a></p></li>
+</ul>
+
+<h2 id="docker-daemon-directory">Docker daemon directory</h2>
+
+<blockquote>
+<p>Docker 守护进程目录</p>
+</blockquote>
+
+<p>The Docker daemon persists all data in a single directory. This tracks everything related to Docker, including containers, images, volumes, service definition, and secrets.</p>
+
+<blockquote>
+<p>Docker守护进程保留所有的数据在同一个目录。这追踪所有关于Docker的信息，包括容器，镜像，卷，服务定义，和密码信息</p>
+</blockquote>
+
+<p>By default this directory is:</p>
+
+<blockquote>
+<p>这些默认的目录是：</p>
+</blockquote>
+
+<ul>
+<li><p>/var/lib/docker on Linux.</p></li>
+
+<li><p>C:\ProgramData\docker on Windows.</p></li>
+</ul>
+
+<p>You can configure the Docker daemon to use a different directory, using the &ldquo;data-root&rdquo; configuration option.</p>
+
+<blockquote>
+<p>你可以配置Docker镜像使用不同的目录，通过 data-root 配置选项</p>
+</blockquote>
+
+<p>Since the state of a Docker daemon is kept on this directory, make sure you use a dedicated directory for each daemon. If two daemons share the same directory, for example, an NFS share, you are going to experience errors that are difficult to troubleshoot.</p>
+
+<blockquote>
+<p>由于Docker守护程序的状态被保留在此目录中，确保为每个守护程序使用专用目录。如果两个守护程序共享同一目录（例如，NFS共享），则将遇到难以解决的错误。</p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/docker/">Docker</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/daemon/">Daemon</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/%E7%BF%BB%E8%AF%91/">翻译</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25911%2f&amp;text=Docker%20Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%91%281%29&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25911%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25911%2f&amp;title=Docker%20Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%91%281%29" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25911%2f&amp;title=Docker%20Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%91%281%29" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25911%2f&amp;title=Docker%20Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%91%281%29" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2ffrank%2fdocker_daemon%25E9%2585%258D%25E7%25BD%25AE%25E5%25AE%2598%25E6%2596%25B9%25E6%2596%2587%25E6%25A1%25A3%25E7%25BF%25BB%25E8%25AF%25911%2f&amp;description=Docker%20Daemon%e9%85%8d%e7%bd%ae%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e7%bf%bb%e8%af%91%281%29" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%913/">Docker_Daemon配置官方文档翻译3</a></li>
+                
+                    <li><a href="/post/frank/docker_daemon%E9%85%8D%E7%BD%AE%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%912/">Docker_Daemon配置官方文档翻译(2)</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/makemon/kubernetes-components/" data-toggle="tooltip" data-placement="top" title="k8s官方文档-组件(1.16版)">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/emiya/traefik/" data-toggle="tooltip" data-placement="top" title="Traefik">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

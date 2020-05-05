@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Annotations Nginx Ingress - panda power!</title>
+  <meta name="description" content="nginx ingress功能测试说明 [TOC]
+1、ingress.class  格式：kubernetes.io/ingress.class: &ldquo;nginx&rdquo; 说明：设置ingress 类型  2、use-regex  格式：nginx.ingress.kubernetes.io/use-regex: &ldquo;true&rdquo;
+ 说明：开启use-regex，启用path的正则匹配
+  3、app-root  格式：nginx.ingress.kubernetes.io/app-root string
+ 功能：重定向到指定目录
+  4、rewrite-target  格式：nginx.ingress.kubernetes.io/rewrite-target: path/url
+ 说明:重写规则、支持正则表达式
+ 示例：
+  nginx.ingress.kubernetes.io/rewrite-target: https://www.baidu.com
+nginx.ingress.kubernetes.io/rewrite-target: /
+5、configuration-snippet  格式：nginx.ingress.kubernetes.io/configuration-snippet: |
+ 说明：支持nginx规则
+ 示例：
+  nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/(.) http://www.baidu.com/ nginx.ingress.kubernetes.io/configuration-snippet: | rewrite /ana /animal/; nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/animal(/|$)?(.) /$2/ break;
+6、server-alias  格式：nginx.ingress.kubernetes.io/server-alias: &ldquo;,&ldquo;">
+  <meta name="author" content="casper chen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "panda power!",
+    
+    "url": "https:\/\/cyboca.ga"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cyboca.ga"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cyboca.ga",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cyboca.ga\/post\/emiya\/annotations-nginx-ingress\/",
+          "name": "Annotations nginx ingress"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "emiya"
+  },
+  "headline": "Annotations Nginx Ingress",
+  "description" : "nginx ingress功能测试说明 [TOC]\n1、ingress.class  格式：kubernetes.io\/ingress.class: \x26ldquo;nginx\x26rdquo; 说明：设置ingress 类型  2、use-regex  格式：nginx.ingress.kubernetes.io\/use-regex: \x26ldquo;true\x26rdquo;\n 说明：开启use-regex，启用path的正则匹配\n  3、app-root  格式：nginx.ingress.kubernetes.io\/app-root string\n 功能：重定向到指定目录\n  4、rewrite-target  格式：nginx.ingress.kubernetes.io\/rewrite-target: path\/url\n 说明:重写规则、支持正则表达式\n 示例：\n  nginx.ingress.kubernetes.io\/rewrite-target: https:\/\/www.baidu.com\nnginx.ingress.kubernetes.io\/rewrite-target: \/\n5、configuration-snippet  格式：nginx.ingress.kubernetes.io\/configuration-snippet: |\n 说明：支持nginx规则\n 示例：\n  nginx.ingress.kubernetes.io\/configuration-snippet: | rewrite ^\/(.) http:\/\/www.baidu.com\/ nginx.ingress.kubernetes.io\/configuration-snippet: | rewrite \/ana \/animal\/; nginx.ingress.kubernetes.io\/configuration-snippet: | rewrite ^\/animal(\/|$)?(.) \/$2\/ break;\n6、server-alias  格式：nginx.ingress.kubernetes.io\/server-alias: \x26ldquo;,\x26ldquo;",
+  "inLanguage" : "zh-cn",
+  "wordCount":  119 ,
+  "datePublished" : "2019-11-17T19:09:20",
+  "dateModified" : "2019-11-17T19:09:20",
+  "image" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+  "keywords" : [ "Kubernetes, Nginx Ingress, Annotations" ],
+  "mainEntityOfPage" : "https:\/\/cyboca.ga\/post\/emiya\/annotations-nginx-ingress\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cyboca.ga",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cyboca.ga\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Annotations Nginx Ingress" />
+<meta property="og:description" content="nginx ingress功能测试说明 [TOC]
+1、ingress.class  格式：kubernetes.io/ingress.class: &ldquo;nginx&rdquo; 说明：设置ingress 类型  2、use-regex  格式：nginx.ingress.kubernetes.io/use-regex: &ldquo;true&rdquo;
+ 说明：开启use-regex，启用path的正则匹配
+  3、app-root  格式：nginx.ingress.kubernetes.io/app-root string
+ 功能：重定向到指定目录
+  4、rewrite-target  格式：nginx.ingress.kubernetes.io/rewrite-target: path/url
+ 说明:重写规则、支持正则表达式
+ 示例：
+  nginx.ingress.kubernetes.io/rewrite-target: https://www.baidu.com
+nginx.ingress.kubernetes.io/rewrite-target: /
+5、configuration-snippet  格式：nginx.ingress.kubernetes.io/configuration-snippet: |
+ 说明：支持nginx规则
+ 示例：
+  nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/(.) http://www.baidu.com/ nginx.ingress.kubernetes.io/configuration-snippet: | rewrite /ana /animal/; nginx.ingress.kubernetes.io/configuration-snippet: | rewrite ^/animal(/|$)?(.) /$2/ break;
+6、server-alias  格式：nginx.ingress.kubernetes.io/server-alias: &ldquo;,&ldquo;">
+<meta property="og:image" content="https://cyboca.ga/img/avatar-icon.png" />
+<meta property="og:url" content="https://cyboca.ga/post/emiya/annotations-nginx-ingress/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="panda power!" />
+
+  <meta name="twitter:title" content="Annotations Nginx Ingress" />
+  <meta name="twitter:description" content="nginx ingress功能测试说明 [TOC]
+1、ingress.class  格式：kubernetes.io/ingress.class: &ldquo;nginx&rdquo; 说明：设置ingress 类型  2、use-regex  格式：nginx.ingress.kubernetes.io/use-regex: &ldquo;true&rdquo;
+ 说明：开 …">
+  <meta name="twitter:image" content="https://cyboca.ga/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <link href='https://cyboca.ga/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.58.3" />
+  <link rel="alternate" href="https://cyboca.ga/index.xml" type="application/rss+xml" title="panda power!"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cyboca.ga/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cyboca.ga/css/highlight.min.css" /><link rel="stylesheet" href="https://cyboca.ga/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cyboca.ga">panda power!</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/categories/">文章</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="tags" href="/tags/">tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="panda power!" href="https://cyboca.ga">
+            <img class="avatar-img" src="https://cyboca.ga/img/avatar-icon.png" alt="panda power!" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Annotations Nginx Ingress</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 17, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;1&nbsp;分钟
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;119&nbsp;个字
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;emiya
+    
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    <div id="gotoTop"><a href="#"></a></div>
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<h1 id="nginx-ingress功能测试说明">nginx ingress功能测试说明</h1>
+
+<p>[TOC]</p>
+
+<h2 id="1-ingress-class">1、ingress.class</h2>
+
+<ol>
+<li>格式：kubernetes.io/ingress.class: &ldquo;nginx&rdquo;</li>
+<li>说明：设置ingress 类型</li>
+</ol>
+
+<h2 id="2-use-regex">2、use-regex</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/use-regex: &ldquo;true&rdquo;</p></li>
+
+<li><p>说明：开启use-regex，启用path的正则匹配</p></li>
+</ol>
+
+<h2 id="3-app-root">3、app-root</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/app-root string</p></li>
+
+<li><p>功能：重定向到指定目录</p></li>
+</ol>
+
+<h2 id="4-rewrite-target">4、rewrite-target</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/rewrite-target: path/url</p></li>
+
+<li><p>说明:重写规则、支持正则表达式</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/rewrite-target: <a href="https://www.baidu.com">https://www.baidu.com</a></p>
+
+<p>nginx.ingress.kubernetes.io/rewrite-target: /</p>
+
+<h2 id="5-configuration-snippet">5、configuration-snippet</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/configuration-snippet: |</p></li>
+
+<li><p>说明：支持nginx规则</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/configuration-snippet: |
+     rewrite ^/(.) <a href="http://www.baidu.com/">http://www.baidu.com/</a>
+   nginx.ingress.kubernetes.io/configuration-snippet: |
+     rewrite /ana /animal/;
+   nginx.ingress.kubernetes.io/configuration-snippet: |
+     rewrite ^/animal(/|$)?(.) /$2/ break;</p>
+
+<h2 id="6-server-alias">6、server-alias</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/server-alias: &ldquo;<alias 1>,<alias 2>&ldquo;</p></li>
+
+<li><p>说明：服务器别名</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/server-alias: &ldquo;nginx.aa.com&rdquo;</p>
+
+<h2 id="7-limit-connections">7、limit-connections</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/limit-connections: number</p></li>
+
+<li><p>说明：单个IP地址允许的并发连接数。超出此限制时，将返回503错误</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/limit-connections: &ldquo;11&rdquo;</p>
+
+<h2 id="8-limit-rps-limit-rpm">8、limit-rps、limit-rpm</h2>
+
+<ol>
+<li><p>格式:nginx.ingress.kubernetes.io/limit-rps: number</p></li>
+
+<li><p>说明：用来限制单位时间内的请求数，即速率限制,采用的漏桶算法 &ldquo;leaky bucket&rdquo;；每秒从给定IP接受的请求数。突发限制设置为限制的5倍。当客户端超过此限制时，将返回503</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/limit-rps: &ldquo;2&rdquo;</p>
+
+<ol>
+<li>参数说明：</li>
+</ol>
+
+<p>limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;</p>
+
+<ul>
+<li><p>$binary_remote_addr 表示通过remote_addr这个标识来做限制，“binary_”的目的是缩写内存占用量，是限制同一客户端ip地址。</p></li>
+
+<li><p>zone=one:10m表示生成一个大小为10M，名字为one的内存区域，用来存储访问的频次信息。</p></li>
+
+<li><p>rate=1r/s表示允许相同标识的客户端的访问频次，这里限制的是每秒1次，还可以有比如30r/m的</p></li>
+</ul>
+
+<p>limit_req zone=one burst=5 nodelay;</p>
+
+<ul>
+<li><p>zone=one 设置使用哪个配置区域来做限制，与上面limit_req_zone 里的name对应。</p></li>
+
+<li><p>burst=5，重点说明一下这个配置，burst爆发的意思，这个配置的意思是设置一个大小为5的缓冲区当有大量请求（爆发）过来时，超过了访问频次限制的请求可以先放到这个缓冲区内。</p></li>
+
+<li><p>nodelay，如果设置，超过访问频次而且缓冲区也满了的时候就会直接返回503，如果没有设置，则所有请求会等待排队</p></li>
+</ul>
+
+<h2 id="9-limit-rate">9、limit-rate</h2>
+
+<ol>
+<li>格式：nginx.ingress.kubernetes.io/limit-rate-after</li>
+<li>说明：初始千字节数，在此之后对给定连接的响应的进一步传输将受到速率限制。</li>
+<li>格式：nginx.ingress.kubernetes.io/limit-rate</li>
+<li>说明：每秒发送到给定连接的千字节数。零值禁用速率限制。</li>
+<li>格式：nginx.ingress.kubernetes.io/limit-whitelist</li>
+<li>说明：客户端IP源范围要从速率限制中排除。该值是逗号分隔的CIDR列表。</li>
+</ol>
+
+<h2 id="10-temporal-redirect">10、temporal-redirect</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/temporal-redirect：</p></li>
+
+<li><p>说明：此注释使您可以返回重定向（返回代码302），而不是将数据发送到上游</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/temporal-redirect：<a href="http://www.baidu.com">http://www.baidu.com</a></p>
+
+<h2 id="11-proxy-buffering">11、proxy-buffering</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/proxy-buffering: string</p></li>
+
+<li><p>说明：开启代理缓冲（默认关闭）</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/proxy-buffering: &ldquo;on&rdquo;</p>
+
+<h2 id="12-proxy-buffers-number">12、proxy-buffers-number</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/proxy-buffers-number</p></li>
+
+<li><p>说明：设置缓冲区数</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/proxy-buffers-number: &ldquo;4&rdquo;</p>
+
+<h2 id="13-proxy-buffer-size">13、proxy-buffer-size</h2>
+
+<ol>
+<li><p>格式：nginx.ingress.kubernetes.io/proxy-buffer-size: string</p></li>
+
+<li><p>说明：设置缓冲区大小</p></li>
+
+<li><p>示例：</p></li>
+</ol>
+
+<p>nginx.ingress.kubernetes.io/proxy-buffer-size: &ldquo;8k&rdquo;</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cyboca.ga/tags/kubernetes/">Kubernetes</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/nginx-ingress/">Nginx Ingress</a>&nbsp;
+            
+              <a href="https://cyboca.ga/tags/annotations/">Annotations</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fannotations-nginx-ingress%2f&amp;text=Annotations%20Nginx%20Ingress&amp;via=" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fannotations-nginx-ingress%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fannotations-nginx-ingress%2f&amp;title=Annotations%20Nginx%20Ingress" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fannotations-nginx-ingress%2f&amp;title=Annotations%20Nginx%20Ingress" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fannotations-nginx-ingress%2f&amp;title=Annotations%20Nginx%20Ingress" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fcyboca.ga%2fpost%2femiya%2fannotations-nginx-ingress%2f&amp;description=Annotations%20Nginx%20Ingress" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/post/emiya/networkpolicy/">NetworkPolicy</a></li>
+                
+                    <li><a href="/post/emiya/headless-service/">Headless service</a></li>
+                
+                    <li><a href="/post/emiya/traefik/">Traefik</a></li>
+                
+                    <li><a href="/post/emiya/nginx-ingress-0.21.0/">安装Nginx Ingress 0.21.0</a></li>
+                
+                    <li><a href="/post/emiya/kubernetes-redis-cluster/">Kubernetes Redis Cluster</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cyboca.ga/post/emiya/nginx-ingress-0.21.0/" data-toggle="tooltip" data-placement="top" title="安装Nginx Ingress 0.21.0">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://cyboca.ga/post/cxn/thinprovisioningsnapshot/" data-toggle="tooltip" data-placement="top" title="Thin Provisioning">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="example.com">casper chen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cyboca.ga">panda power!</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.58.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cyboca.ga/js/main.js"></script>
+<script src="https://cyboca.ga/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cyboca.ga/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

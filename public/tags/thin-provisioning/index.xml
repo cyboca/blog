@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thin Provisioning on panda power!</title>
+    <link>https://cyboca.ga/tags/thin-provisioning/</link>
+    <description>Recent content in Thin Provisioning on panda power!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 20:33:48 +0800</lastBuildDate>
+    
+	<atom:link href="https://cyboca.ga/tags/thin-provisioning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Thin Provisioning</title>
+      <link>https://cyboca.ga/post/cxn/thinprovisioningsnapshot/</link>
+      <pubDate>Sun, 17 Nov 2019 20:33:48 +0800</pubDate>
+      
+      <guid>https://cyboca.ga/post/cxn/thinprovisioningsnapshot/</guid>
+      <description>Thin Provisioning Snapshot 演示 下面，我们用一系列的命令来演示一下Device Mapper的Thin Provisioning Snapshot是怎么玩的。
+首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：
+[root@node001 ~]# dd if=/dev/zero of=/tmp/data.img bs=1K count=1 seek=10M 1+0 records in 1+0 records out 1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB/s [root@node001 ~]# dd if=/dev/zero of=/tmp/meta.data.img bs=1K count=1 seek=1G 1+0 records in 1+0 records out 1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB/s 注意命令中seek选项，其表示为略过of选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。
+[root@node001 ~]# ls -lsh /tmp/data.img 12K -rw-r--r--. 1 root root 11G Aug 25 23:01 /tmp/data.</description>
+    </item>
+    
+  </channel>
+</rss>
